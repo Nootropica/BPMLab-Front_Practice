@@ -1,36 +1,32 @@
 import React, { useState } from 'react';
-import TextInputBlock from './components/TextInputBlock/TextInputBlock';  // Импортируем компонент
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Header from './components/Header/Header';
 
-function App() {
-  const [inputValue, setInputValue] = useState('');
+const App = () => {
+  const [pages, setPages] = useState([
+    { name: 'Группы полей', url: '/wp-admin/admin.php?page=cfe-main' }
+  ]);
 
-  const handleInputChange = (value) => {
-    setInputValue(value);
+  const handleAddPage = () => {
+    const exists = pages.some(p => p.url === '/wp-admin/admin.php?page=cfe-settings-group');
+    if (!exists) {
+      setPages([...pages, { name: 'Настройки группы', url: '/wp-admin/admin.php?page=cfe-settings-group' }]);
+    }
   };
 
   return (
-    <div className="App">
-      <h1>My React App</h1>
-      {/* Используем компонент TextInputBlock */}
-      <TextInputBlock 
-        label="Enter your text:" 
-        initialValue={inputValue} 
-        onChange={handleInputChange} 
-      />
-      <div>
-        <p>You entered: {inputValue}</p>
-      </div>
+    <Router>
+      <Header pages={pages} />
 
-      <TextInputBlock 
-        label="Enter your text2:" 
-        initialValue={inputValue} 
-        onChange={handleInputChange} 
-      />
-      <div>
-        <p>You entered: {inputValue}</p>
+      <Routes>
+        <Route path="/wp-admin/admin.php?page=cfe-main" element={<div>Группы полей</div>} />
+        <Route path="/wp-admin/admin.php?page=cfe-settings-group" element={<div>Настройки группы</div>} />
+      </Routes>
+      <div style={{ padding: '20px' }}>
+        <button onClick={handleAddPage}>Добавить вкладку "Настройки группы"</button>
       </div>
-    </div>
+    </Router>
   );
-}
+};
 
 export default App;
