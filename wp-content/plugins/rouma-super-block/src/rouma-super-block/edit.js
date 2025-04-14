@@ -1,38 +1,85 @@
-/**
- * Retrieves the translation of text.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
- */
-import { __ } from '@wordpress/i18n';
+const { __ } = wp.i18n;
+const { registerBlockType } = wp.blocks;
+const { InnerBlocks, RichText, useBlockProps } = wp.blockEditor;
 
-/**
- * React hook that is used to mark the block wrapper element.
- * It provides all the necessary props like the class name.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
- */
-import { useBlockProps } from '@wordpress/block-editor';
+registerBlockType('rouma-super-block/faq-accordion', {
+  title: __('FAQ Аккордеон'),
+  icon: 'editor-ul',
+  category: 'design',
+  
+  edit: () => {
+    const blockProps = useBlockProps({
+      className: 'faq-accordion-wrapper'
+    });
 
-/**
- * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
- * Those files can contain any CSS code that gets applied to the editor.
- *
- * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
- */
-import './editor.scss';
+    const template = [
+      ['rouma-super-block/faq-item', {}]
+    ];
 
-/**
- * The edit function describes the structure of your block in the context of the
- * editor. This represents what the editor will render when the block is used.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
- *
- * @return {Element} Element to render.
- */
-export default function Edit() {
-	return (
-		<p { ...useBlockProps() }>
-			{ __( 'My block – hello from the editor!', 'rouma-super-block' ) }
-		</p>
-	);
-}
+    return (
+      <div {...blockProps}>
+        <InnerBlocks
+          allowedBlocks={['rouma-super-block/faq-item']}
+          template={template}
+          templateLock={false}
+          renderAppender={InnerBlocks.ButtonBlockAppender}
+          orientation="vertical"
+        />
+      </div>
+    );
+  },
+
+  save: () => (
+    <div {...useBlockProps.save({ className: 'faq-accordion-wrapper' })}>
+      <InnerBlocks.Content />
+    </div>
+  ),
+});
+
+registerBlockType('rouma-super-block/faq-item', {
+  title: __('Элемент FAQ'),
+  icon: 'editor-help',
+  category: 'design',
+  parent: ['rouma-super-block/faq-accordion'],
+  
+  attributes: {
+    question: {
+      type: 'string',
+      source: 'html',
+      selector: '.faq-question'
+    },
+    answer: {
+      type: 'string',
+      source: 'html',
+      selector: '.faq-answer'
+    }
+  },
+
+  edit: ({ attributes, setAttributes }) => {
+    return (
+      <div className="faq-item">
+        <RichText
+          tagName="div"
+          className="faq-question"
+          placeholder={__('Введите вопрос...')}
+          value={attributes.question}
+          onChange={(question) => setAttributes({ question })}
+        />
+        <RichText
+          tagName="div"
+          className="faq-answer"
+          placeholder={__('Введите ответ...')}
+          value={attributes.answer}
+          onChange={(answer) => setAttributes({ answer })}
+        />
+      </div>
+    );
+  },
+
+  save: ({ attributes }) => (
+    <div className="faq-item">
+      <RichText.Content tagName="div" className="faq-question" value={attributes.question} />
+      <RichText.Content tagName="div" className="faq-answer" value={attributes.answer} />
+    </div>
+  )
+});

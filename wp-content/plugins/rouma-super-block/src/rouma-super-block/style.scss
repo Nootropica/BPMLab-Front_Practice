@@ -1,12 +1,52 @@
-/**
- * The following styles get applied both on the front of your site
- * and in the editor.
- *
- * Replace them with your own styles or remove the file completely.
- */
-
-.wp-block-create-block-rouma-super-block {
-	background-color: #21759b;
-	color: #fff;
-	padding: 2px;
-}
+.faq-accordion-wrapper {
+	width: 100%;
+	max-width: 1000px;
+	margin: 0 auto;
+  }
+  
+  .faq-item {
+	border-bottom: solid 10px #aeaeae; /* Тонкая серая граница */
+	padding: 20px 0;
+	position: relative;
+  }
+  
+  .faq-question {
+	font-size: 18px;
+	font-weight: 600;
+	color: #333;
+	padding-right: 30px;
+	cursor: pointer;
+	position: relative;
+	margin: 0;
+  
+	&::after {
+	  content: '+';
+	  position: absolute;
+	  right: 0;
+	  top: 50%;
+	  transform: translateY(-50%);
+	  font-size: 20px;
+	  transition: transform 0.3s ease;
+	}
+  }
+  
+  .faq-answer {
+	font-size: 16px;
+	color: #555;
+	line-height: 1.6;
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.3s ease, padding-top 0.3s ease;
+  }
+  
+  /* Активный элемент */
+  .faq-item.active {
+	.faq-question::after {
+	  content: '-';
+	}
+  
+	.faq-answer {
+	  max-height: 1000px;
+	  padding-top: 15px;
+	}
+  }

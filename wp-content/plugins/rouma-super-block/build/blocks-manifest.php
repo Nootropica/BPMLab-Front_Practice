@@ -3,23 +3,21 @@
 return array(
 	'rouma-super-block' => array(
 		'$schema' => 'https://schemas.wp.org/trunk/block.json',
-		'apiVersion' => 3,
-		'name' => 'create-block/rouma-super-block',
-		'version' => '0.1.0',
-		'title' => 'My block',
-		'category' => 'theme',
-		'icon' => 'smiley',
-		'description' => 'Какое-то описание',
-		'example' => array(
-			
+		'apiVersion' => 2,
+		'name' => 'rouma-super-block/faq-accordion',
+		'title' => 'FAQ Аккордеон',
+		'category' => 'design',
+		'icon' => 'editor-ul',
+		'description' => 'Блок с вопросами и ответами в формате аккордеона',
+		'keywords' => array(
+			'faq',
+			'аккордеон',
+			'вопросы'
 		),
-		'supports' => array(
-			'html' => false
-		),
-		'textdomain' => 'rouma-super-block',
+		'version' => '1.0.0',
 		'editorScript' => 'file:./index.js',
-		'editorStyle' => 'file:./index.css',
-		'style' => 'file:./style-index.css',
+		'editorStyle' => 'file:./editor.css',
+		'style' => 'file:./style.css',
 		'viewScript' => 'file:./view.js'
 	)
 );
