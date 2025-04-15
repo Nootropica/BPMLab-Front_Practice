@@ -1,0 +1,81 @@
+/*!**********************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/rouma-super-block/editor.scss ***!
+  \**********************************************************************************************************************************************************************************************************************************************************/
+.faq-accordion {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+@media (max-width: 768px) {
+  .faq-accordion {
+    padding: 10px;
+    border-radius: 0;
+  }
+}
+
+.faq-item {
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 10px;
+}
+.faq-item__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 15px 0;
+  transition: all 0.3s ease;
+}
+@media (hover: hover) {
+  .faq-item__header:hover {
+    opacity: 0.8;
+  }
+}
+.faq-item__question {
+  flex: 1;
+  margin-right: 15px;
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: clamp(18px, 4vw, 24px);
+}
+.faq-item__arrow {
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+.faq-item.is-open .faq-item__arrow {
+  transform: rotate(180deg);
+}
+.faq-item__content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.faq-item.is-open .faq-item__content {
+  max-height: 100vh;
+}
+.faq-item__answer {
+  padding: 0 0 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease 0.1s;
+  font-size: clamp(16px, 3.5vw, 18px);
+  line-height: 1.5;
+  color: #34495e;
+}
+.faq-item.is-open .faq-item__answer {
+  opacity: 1;
+}
+@media (max-width: 576px) {
+  .faq-item {
+    margin-bottom: 8px;
+  }
+  .faq-item__header {
+    padding: 10px 0;
+  }
+  .faq-item__answer {
+    padding-bottom: 15px;
+  }
+}
+
+/*# sourceMappingURL=index.css.map*/

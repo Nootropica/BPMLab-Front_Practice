@@ -1,29 +1,23 @@
 document.addEventListener('DOMContentLoaded', function() {
     const faqItems = document.querySelectorAll('.faq-item');
     
-    faqItems.forEach(item => {
-        const question = item.querySelector('.faq-question');
-        const answer = item.querySelector('.faq-answer');
+    if (faqItems.length) {
+      faqItems.forEach(item => {
+        const header = item.querySelector('.faq-item__header');
+        const content = item.querySelector('.faq-item__content');
+        const answer = item.querySelector('.faq-item__answer');
+        const arrow = item.querySelector('.faq-item__arrow');
         
-        // Инициализация
-        answer.style.maxHeight = '0';
-        answer.style.overflow = 'hidden';
-        answer.style.transition = 'max-height 0.3s ease, padding-top 0.3s ease';
-        
-        question.addEventListener('click', function() {
-            // Переключаем класс active
-            item.classList.toggle('active');
-            
-            // Анимация раскрытия
-            if (item.classList.contains('active')) {
-                answer.style.maxHeight = answer.scrollHeight + 'px';
-                setTimeout(() => {
-                    answer.style.overflow = 'visible';
-                }, 300);
-            } else {
-                answer.style.maxHeight = '0';
-                answer.style.overflow = 'hidden';
-            }
+        header.addEventListener('click', () => {
+          item.classList.toggle('is-open');
+          
+          if (item.classList.contains('is-open')) {
+            // Устанавливаем точную высоту для плавной анимации
+            content.style.setProperty('--content-height', `${answer.scrollHeight}px`);
+          } else {
+            content.style.removeProperty('--content-height');
+          }
         });
-    });
-});
+      });
+    }
+  });

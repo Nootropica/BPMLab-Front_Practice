@@ -8,7 +8,7 @@
   \******************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"rouma-super-block/faq-accordion","title":"FAQ Аккордеон","category":"design","icon":"editor-ul","description":"Блок с вопросами и ответами в формате аккордеона","keywords":["faq","аккордеон","вопросы"],"version":"1.0.0","editorScript":"file:./index.js","editorStyle":"file:./editor.css","style":"file:./style.css","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"rouma-super-block/faq-accordion","title":"FAQ Аккордеон","category":"design","icon":"editor-ul","description":"Блок с вопросами и ответами в формате аккордеона","keywords":["faq","аккордеон","вопросы"],"version":"1.0.0","editorScript":"file:./index.js","editorStyle":"file:./index-rtl.css","style":"file:./style-index.css","viewScript":"file:./view.js"}');
 
 /***/ }),
 
@@ -19,9 +19,10 @@ module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/tru
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
-
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./style.scss */ "./src/rouma-super-block/style.scss");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./editor.scss */ "./src/rouma-super-block/editor.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__);
 const {
   __
 } = wp.i18n;
@@ -33,18 +34,27 @@ const {
   RichText,
   useBlockProps
 } = wp.blockEditor;
+const {
+  Icon
+} = wp.components;
+const {
+  useState
+} = wp.element;
+
+
+
 registerBlockType('rouma-super-block/faq-accordion', {
   title: __('FAQ Аккордеон'),
   icon: 'editor-ul',
   category: 'design',
   edit: () => {
     const blockProps = useBlockProps({
-      className: 'faq-accordion-wrapper'
+      className: 'faq-accordion'
     });
     const template = [['rouma-super-block/faq-item', {}]];
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
       ...blockProps,
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(InnerBlocks, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(InnerBlocks, {
         allowedBlocks: ['rouma-super-block/faq-item'],
         template: template,
         templateLock: false,
@@ -53,11 +63,11 @@ registerBlockType('rouma-super-block/faq-accordion', {
       })
     });
   },
-  save: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+  save: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
     ...useBlockProps.save({
-      className: 'faq-accordion-wrapper'
+      className: 'faq-accordion'
     }),
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(InnerBlocks.Content, {})
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(InnerBlocks.Content, {})
   })
 });
 registerBlockType('rouma-super-block/faq-item', {
@@ -69,54 +79,97 @@ registerBlockType('rouma-super-block/faq-item', {
     question: {
       type: 'string',
       source: 'html',
-      selector: '.faq-question'
+      selector: '.faq-item__question'
     },
     answer: {
       type: 'string',
       source: 'html',
-      selector: '.faq-answer'
+      selector: '.faq-item__answer'
     }
   },
   edit: ({
     attributes,
     setAttributes
   }) => {
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-      className: "faq-item",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RichText, {
-        tagName: "div",
-        className: "faq-question",
-        placeholder: __('Введите вопрос...'),
-        value: attributes.question,
-        onChange: question => setAttributes({
-          question
-        })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RichText, {
-        tagName: "div",
-        className: "faq-answer",
-        placeholder: __('Введите ответ...'),
-        value: attributes.answer,
-        onChange: answer => setAttributes({
-          answer
+    const [isOpen, setIsOpen] = useState(false);
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      className: `faq-item ${isOpen ? 'is-open' : ''}`,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "faq-item__header",
+        onClick: () => setIsOpen(!isOpen),
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(RichText, {
+          tagName: "div",
+          className: "faq-item__question",
+          placeholder: __('Введите вопрос...'),
+          value: attributes.question,
+          onChange: question => setAttributes({
+            question
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Icon, {
+          icon: isOpen ? 'arrow-up-alt2' : 'arrow-down-alt2',
+          className: "faq-item__arrow"
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "faq-item__content",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(RichText, {
+          tagName: "div",
+          className: "faq-item__answer",
+          placeholder: __('Введите ответ...'),
+          value: attributes.answer,
+          onChange: answer => setAttributes({
+            answer
+          })
         })
       })]
     });
   },
   save: ({
     attributes
-  }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-    className: "faq-item",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RichText.Content, {
-      tagName: "div",
-      className: "faq-question",
-      value: attributes.question
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(RichText.Content, {
-      tagName: "div",
-      className: "faq-answer",
-      value: attributes.answer
-    })]
-  })
+  }) => {
+    const blockProps = useBlockProps.save({
+      className: 'faq-item'
+    });
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      ...blockProps,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "faq-item__header",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(RichText.Content, {
+          tagName: "div",
+          className: "faq-item__question",
+          value: attributes.question
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("svg", {
+          className: "faq-item__arrow",
+          width: "20",
+          height: "20",
+          viewBox: "0 0 20 20",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
+            d: "M14.5 6.5L10 11l-4.5-4.5L4 8l6 6 6-6-1.5-1.5z",
+            fill: "currentColor"
+          })
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "faq-item__content",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(RichText.Content, {
+          tagName: "div",
+          className: "faq-item__answer",
+          value: attributes.answer
+        })
+      })]
+    });
+  }
 });
+
+/***/ }),
+
+/***/ "./src/rouma-super-block/editor.scss":
+/*!*******************************************!*\
+  !*** ./src/rouma-super-block/editor.scss ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
 
 /***/ }),
 
