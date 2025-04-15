@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header/Header';
+import ExtraPanel from './components/ExtraPanel/ExtraPanel';
 
 const App = () => {
   const [pages, setPages] = useState([
-    { name: 'Группы полей', url: '/wp-admin/admin.php?page=cfe-main' }
+        { name: 'Группы полей', url: '/wp-admin/admin.php?page=cfe-main' }
   ]);
 
   const handleAddPage = () => {
@@ -16,15 +17,14 @@ const App = () => {
 
   return (
     <Router>
+      {/* компонент Header */}
       <Header pages={pages} />
 
       <Routes>
         <Route path="/wp-admin/admin.php?page=cfe-main" element={<div>Группы полей</div>} />
         <Route path="/wp-admin/admin.php?page=cfe-settings-group" element={<div>Настройки группы</div>} />
       </Routes>
-      <div style={{ padding: '20px' }}>
-        <button onClick={handleAddPage}>Добавить вкладку "Настройки группы"</button>
-      </div>
+      <ExtraPanel onAddPage={handleAddPage} />
     </Router>
   );
 };

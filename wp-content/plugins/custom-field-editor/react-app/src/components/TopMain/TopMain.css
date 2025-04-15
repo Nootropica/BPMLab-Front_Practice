@@ -1,0 +1,72 @@
+.cfe_topmain{
+    padding: 12px;
+    padding-bottom: 0px;
+    background-color: #F5F7FA;
+    border-radius: 12px 12px 0 0;
+    border-bottom: #E2E4E7 solid 2px;
+    display: flex;
+    box-sizing: border-box;
+    position: sticky;
+}
+
+.cfe_topmain_main_button{
+    display: flex;
+    font-size: 18px;
+    background-color: #3858E9;
+    color: #F5F7FA;
+    height: 40px;
+    padding: 8px;
+    border: none;
+    border-radius: 8px;
+    margin-right: 20px;
+    align-items: center;
+    gap: 8px; 
+    transition: all 0.1s ease;
+}
+
+.cfe_topmain_main_button:hover{
+    background-color: #2c45b4;
+}
+
+.cfe_topmain_button_settings{
+    display: flex;
+    font-size: 18px;
+    background-color: #F5F7FA;
+    color: #2C3338;
+    height: 40px;
+    padding: 8px;
+    border: none;
+    border-radius: 8px;
+    align-items: center;
+    gap: 8px; 
+    transition: all 0.1s ease;
+}
+
+.cfe_topmain_button_settings:hover{
+    background-color: #E2E4E7;
+}
+
+.cfe_topmain_button_settings-active{
+    height: 50px;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    background-color: #F5F7FA;
+}
+
+.cfe_topmain_spreading-effect-block{
+    height: 50px;
+    width: 8px;
+    background-color: #F5F7FA;
+    transition: all 0.2s ease;
+}
+.cfe_topmain_spreading-effect.activ.cfe_topmain_spreading-effect-left {
+    height: 50px;
+    border-radius: 0 0 8px 0;
+    transition: all 0.2s ease;
+}
+
+.cfe_topmain_spreading-effect.activ.cfe_topmain_spreading-effect-right {
+    height: 50px;
+    border-radius: 0 0 0 8px;
+    transition: all 0.2s ease;
+}

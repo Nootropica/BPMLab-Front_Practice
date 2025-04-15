@@ -1,8 +1,14 @@
+/*
+Блок Хедера, с добавлением дополнительных страниц если необходимо
+процесс навигации происходит без перехода на новую страницу
+*/
+
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './Header.css';
 
 const Header = ({ pages }) => {
+  //контроль локации пользователя
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname + location.search;
@@ -23,11 +29,12 @@ const Header = ({ pages }) => {
   
     return () => clearTimeout(timeout);
   }, [currentPath, pages]);
-
+  // Возвращаем содержимое страницы
   return (
     <header className="cfe_header">
       <div className="cfe_header-title">CFE</div>
       <div className="cfe_header_pages">
+        {/* Создаём столько страниц сколько в таблице лежит */}
         {pages.map((page, index) => {
           const isActive = index === activeIndex;
           const isDelayedActive = index === delayedActiveIndex;

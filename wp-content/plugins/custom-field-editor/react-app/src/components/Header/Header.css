@@ -1,20 +1,22 @@
 /* src/components/Header/Header.css */
 .cfe_header {
   width: 100%;
+  max-width: 1440px;
   background-color: #e2e4e7;
   color: #2c3338;
   padding: 0 12px;
   height: 60px;
   display: flex;
-  align-items: center;
   box-sizing: border-box;
   position: sticky;
   top: 0;
   z-index: 100;
   font-size: 18px;
+  overflow: hidden;
 }
 
 .cfe_header-title {
+  padding-top: 20px;
   font-size: 32px;
   font-family: 'Roboto', sans-serif;
   color: #2c3338;
@@ -27,11 +29,23 @@
   display: flex;
   flex-direction: row;
   align-items: flex-start;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.cfe_header_pages::-webkit-scrollbar {
+  display: none;
 }
 
 .cfe_header-page,
-.cfe_header-page-activ{
+.cfe_header-page-activ {
   transition: all 0.1s ease;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .cfe_header-page {
@@ -70,4 +84,66 @@
 
 .cfe_header_spreading-effect-block {
   background-color: #F5F7FA;
+}
+
+@media (max-width: 768px) {
+  .cfe_header {
+    font-size: 16px;
+    height: 55px;
+  }
+
+  .cfe_header-title {
+    font-size: 28px;
+  }
+
+  .cfe_header-page {
+    height: 35px;
+    padding: 0 12px;
+    max-width: 160px;
+    min-width: 80px;
+  }
+
+  .cfe_header-page-activ {
+    height: 45px;
+    padding: 0 12px;
+    max-width: 160px;
+    min-width: 80px;
+  }
+
+  .cfe_header_spreading-effect {
+    height: 45px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cfe_header {
+    font-size: 14px;
+    height: 48px;
+  }
+
+  .cfe_header-title {
+    font-size: 24px;
+  }
+
+  .cfe_header-page {
+    height: 30px;
+    padding: 0 8px;
+    max-width: 120px;
+    min-width: 60px;
+  }
+
+  .cfe_header-page-activ {
+    height: 40px;
+    padding: 0 8px;
+    max-width: 120px;
+    min-width: 60px;
+  }
+
+  .cfe_header_pages {
+    padding-top: 8px;
+  }
+
+  .cfe_header_spreading-effect {
+    height: 40px;
+  }
 }
