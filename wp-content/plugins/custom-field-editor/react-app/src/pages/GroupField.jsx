@@ -1,5 +1,5 @@
 import React from 'react';
-import TopMain from '../TopMain/TopMain';
+import TopMain from '../components/TopMain/TopMain';
 
 const GroupField = ({ onAddPage }) => (
     <>
@@ -7,4 +7,4 @@ const GroupField = ({ onAddPage }) => (
     </>
   );
   
-  export default GroupField;
+export default GroupField;

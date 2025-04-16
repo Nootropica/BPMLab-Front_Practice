@@ -1,52 +1,172 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './TopMain.css';
 
 const TopMain = ({ onAddPage }) => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const currentPath = location.pathname + location.search;
 
-    const handleClick = () => {
+    /* Часть для обработки страницы "Группы полей" */
+
+    const [checkboxes, setCheckboxes] = useState({
+        description: false,
+        status: false,
+        key: false,
+        location: false,
+        fields: false
+    });
+
+    const handleCheckboxChange = (e) => {
+        const { name, checked } = e.target;
+        setCheckboxes(prev => ({
+            ...prev,
+            [name]: checked
+        }));
+    };
+
+    const handleAddGroupClick = () => {
         if (onAddPage) onAddPage();
-        
         navigate(`/wp-admin/admin.php?page=cfe-settings-group`);
     };
 
-    return (
-        <div className="cfe_topmain">
-            <button
-                className="cfe_topmain_main_button"
-                onClick={handleClick}
-            >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M11 17H13V13H17V11H13V7H11V11H7V13H11V17ZM12 22C10.6167 22 9.31667 21.7417 8.1 21.225C6.88333 20.6917 5.825 19.975 4.925 19.075C4.025 18.175 3.30833 17.1167 2.775 15.9C2.25833 14.6833 2 13.3833 2 12C2 10.6167 2.25833 9.31667 2.775 8.1C3.30833 6.88333 4.025 5.825 4.925 4.925C5.825 4.025 6.88333 3.31667 8.1 2.8C9.31667 2.26667 10.6167 2 12 2C13.3833 2 14.6833 2.26667 15.9 2.8C17.1167 3.31667 18.175 4.025 19.075 4.925C19.975 5.825 20.6833 6.88333 21.2 8.1C21.7333 9.31667 22 10.6167 22 12C22 13.3833 21.7333 14.6833 21.2 15.9C20.6833 17.1167 19.975 18.175 19.075 19.075C18.175 19.975 17.1167 20.6917 15.9 21.225C14.6833 21.7417 13.3833 22 12 22ZM12 20C14.2333 20 16.125 19.225 17.675 17.675C19.225 16.125 20 14.2333 20 12C20 9.76667 19.225 7.875 17.675 6.325C16.125 4.775 14.2333 4 12 4C9.76667 4 7.875 4.775 6.325 6.325C4.775 7.875 4 9.76667 4 12C4 14.2333 4.775 16.125 6.325 17.675C7.875 19.225 9.76667 20 12 20Z" fill="#F5F7FA"/>
-                </svg>
-                Создать группу
-            </button>
+    const handleSettingsClick = () => {
+        setIsSettingsOpen(prev => !prev);
+    };
 
-            <div className="cfe_topmain_spreading-effect-block">
-                <div
-                    className={`cfe_topmain_spreading-effect cfe_topmain_spreading-effect-left'}`}
-                ></div>
-            </div>
+    /* Часть для обработки страницы "Настройки группы" */
+    const [inputValue, setInputValue] = useState('');
+    const [timer, setTimer] = useState(null);
 
-            <button
-                className={`cfe_topmain_button_settings`}
-            >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 15L7 10H17L12 15Z" fill="#1D1B20"/>
-                </svg>
-                Настройки таблицы 
-            </button>
+    const handleInputChange = (e) => {
+        const { value } = e.target;
+        setInputValue(value);
+    
+        if (timer) {
+            clearTimeout(timer);
+        }
+    
+        const newTimer = setTimeout(() => {
+            sendRequest(value);
+        }, 1000);
+    
+        setTimer(newTimer);
+    };
+    
+    const sendRequest = (data) => {
+        console.log('Запрос отправлен на сервер с данными: ', data);
+    };
 
-            <div className="cfe_topmain_spreading-effect-block">
-                <div
-                    className={`cfe_topmain_spreading-effect cfe_topmain_spreading-effect-right}`}
-                />
-            </div>
+    let content;
+    switch (currentPath) {
+        case '/wp-admin/admin.php?page=cfe-main':
+            content = (
+                <>
+                    <div className="cfe_topmain">
+                        <button
+                            className="cfe_topmain_main_button"
+                            onClick={handleAddGroupClick}
+                        >
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M11 17H13V13H17V11H13V7H11V11H7V13H11V17Z" fill="#F5F7FA"/>
+                                <path d="M12 22C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10Zm0-2c4.41 0 8-3.59 8-8s-3.59-8-8-8-8 3.59-8 8 3.59 8 8 8Z" fill="#F5F7FA"/>
+                            </svg>
+                            Создать группу
+                        </button>
 
+                        <div className="cfe_topmain_spreading-effect-block">
+                            <div
+                                className={`cfe_topmain_spreading-effect cfe_topmain_spreading-effect-left ${isSettingsOpen ? 'activ' : ''}`}
+                            />
+                        </div>
 
-        </div>
-    );
+                        <button
+                            className={`cfe_topmain_button_settings ${isSettingsOpen ? 'active' : ''}`}
+                            onClick={handleSettingsClick}
+                        >
+                            <svg
+                                className={isSettingsOpen ? 'rotated' : ''}
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                            >
+                                <path d="M12 15L7 10H17L12 15Z" fill="#1D1B20" />
+                            </svg>
+                            Настройки таблицы
+                        </button>
+
+                        <div className="cfe_topmain_spreading-effect-block">
+                            <div
+                                className={`cfe_topmain_spreading-effect cfe_topmain_spreading-effect-right ${isSettingsOpen ? 'activ' : ''}`}
+                            />
+                        </div>
+                    </div>
+
+                    {isSettingsOpen && (
+                        <div className="cfe_settings_block open">
+                            <h4 className="cfe_settings_block_title">Столбцы</h4>
+                            <div className="cfe_settings_checkboxes">
+                                {[
+                                    { name: "description", label: "Описание" },
+                                    { name: "status", label: "Статус" },
+                                    { name: "key", label: "Ключ" },
+                                    { name: "location", label: "Расположение" },
+                                    { name: "fields", label: "Поля" }
+                                ].map(({ name, label }) => (
+                                    <label key={name}>
+                                        <input
+                                            type="checkbox"
+                                            name={name}
+                                            checked={checkboxes[name]}
+                                            onChange={handleCheckboxChange}
+                                            className="cfe_custom_checkbox_input"
+                                        />
+                                        <span className={`cfe_custom_checkbox_icon ${checkboxes[name] ? 'checked' : ''}`}>
+                                            {checkboxes[name] && (
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                    <path d="M10.6 16.2L17.65 9.15L16.25 7.75L10.6 13.4L7.75 10.55L6.35 11.95L10.6 16.2ZM5 21C4.45 21 3.97933 20.8043 3.588 20.413C3.19667 20.0217 3.00067 19.5507 3 19V5C3 4.45 3.196 3.97933 3.588 3.588C3.98 3.19667 4.45067 3.00067 5 3H19C19.55 3 20.021 3.196 20.413 3.588C20.805 3.98 21.0007 4.45067 21 5V19C21 19.55 20.8043 20.021 20.413 20.413C20.0217 20.805 19.5507 21.0007 19 21H5Z" fill="#3858E9"/>
+                                                </svg>
+                                            )}
+                                        </span>
+                                        {label}
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </>
+            );
+            break;
+
+        case '/wp-admin/admin.php?page=cfe-settings-group':
+            content =(
+                <>
+                    <div className="cfe_topmain cfe_topmain_settings_group" >
+                        <input
+                            className="cfe_topmain_input"
+                            type="text"
+                            value={inputValue}
+                            onChange={handleInputChange}
+                            placeholder="Название группы"
+                        />
+                        <button
+                            className="cfe_topmain_main_button cfe_topmain_button_save"
+                            // onClick={handleAddGroupClick}
+                        >
+                            Сохранить изменения
+                        </button>
+                    </div>
+                </>
+            );
+             break;
+
+        default:
+            content = null;
+    }
+
+    return <>{content}</>;
 };
 
 export default TopMain;
