@@ -1,0 +1,168 @@
+/* В случае, если групп полей еще не существует */
+
+.cfe-groupfield-content-false{
+    height: auto;
+    padding: 40px 0;
+    background-color: #F5F7FA;
+    border-radius: 0 0 12px 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cfe-groupfield-create-block{
+    text-align: center;
+}
+
+.cfe-groupfield-create-title{
+    font-size: 24px;
+    color: #2C3338;
+    margin: 0 0 12px 0;
+}
+
+.cfe-groupfield-icons-contaner {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 0 0 12px 0;
+    border-bottom: 2px solid #E2E4E7;
+    margin-bottom: 12px;
+}
+
+.cfe-groupfield-create-text {
+    font-size: 18px;
+    text-align: center;   
+    word-wrap: break-word;
+    max-width: 400px;     
+    margin: 0 auto;
+    color: #50575E;
+}
+
+@media (max-width: 768px) {
+    .cfe-groupfield-create-title {
+      font-size: 20px;
+    }
+  
+    .cfe-groupfield-create-text {
+      font-size: 16px;
+      max-width: 300px;
+      padding: 0 12px;
+    }
+  
+    .cfe-groupfield-icons-contaner {
+      gap: 6px;
+      padding: 0 0 10px 0;
+      margin-bottom: 10px;
+    }
+  
+    .cfe-groupfield-content-false {
+      height: auto;
+      padding: 24px 12px;
+    }
+}
+  
+@media (max-width: 480px) {
+    .cfe-groupfield-create-title {
+      font-size: 18px;
+    }
+
+    .cfe-groupfield-create-text {
+      font-size: 14px;
+      max-width: 100%;
+      padding: 0 8px;
+    }
+
+    .cfe-groupfield-icons-contaner {
+      gap: 4px;
+      padding: 0 0 8px 0;
+      margin-bottom: 8px;
+    }
+
+    .cfe-groupfield-content-false {
+      padding: 16px 8px;
+    }
+}
+
+/* В случае, если группы полей существуют */
+
+.cfe-groupfield-content-true{
+    height: auto;
+    max-height: 60vh;
+    background-color: #F5F7FA;
+    border-radius: 0 0 12px 12px;
+    flex-direction: column;
+    display: flex;
+}
+
+.cfe-groupfield-content-true {
+    display: flex;
+    padding: 12px;
+}
+
+.cfe-groupfield-search-input-wrapper {
+    width: 100%;
+    max-width: 400px;
+}
+
+.cfe-groupfield-input-container {
+    display: flex;
+    align-items: center;
+    background-color: #F5F7FA;
+    border: 2px solid #E2E4E7;
+    border-radius: 8px;
+    padding: 0 12px;
+    margin-bottom: 12px;
+}
+
+.cfe-groupfield-input-container input {
+    flex: 1;
+    height: 34px;
+    padding: 8px 0;
+    font-size: 18px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: #50575E;
+    box-sizing: border-box;
+}
+.cfe-groupfield-input-container input:focus {
+    outline: none;
+    border: none;
+    box-shadow: none;
+    background-color: transparent;
+}
+
+.cfe-groupfield-input-container .search-icon {
+    margin-left: 8px;
+    color: #50575E;
+    flex-shrink: 0;
+}
+
+.cfe-groupfield-button{
+  font-size: 18px;
+  border-radius: 8px;
+  border: 2px solid #3858E9;
+  height: 40px;
+  margin-right: 20px;
+  background-color: #F5F7FA;
+  color: #3858E9;
+  transition: all 0.1s ease;
+}
+
+.cfe-groupfield-button:hover{
+  color: #F5F7FA;
+  background-color: #3858E9;
+}
+
+.cfe-groupfield-button-last{
+  color: #DC3232;
+  border: 2px solid #DC3232;
+  margin: 0;
+}
+
+.cfe-groupfield-button-last:hover{
+  color: #F5F7FA;
+  background-color: #DC3232;
+}

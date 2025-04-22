@@ -1,29 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './TopMain.css';
 
-const TopMain = ({ onAddPage }) => {
+const TopMain = ({ onAddPage, checkboxes, setCheckboxes }) => {
     const navigate = useNavigate();
     const location = useLocation();
-    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [showSettingsBlock, setShowSettingsBlock] = useState(false);
+    const [settingsOpenAnimation, setSettingsOpenAnimation] = useState(false);
     const currentPath = location.pathname + location.search;
 
     /* Часть для обработки страницы "Группы полей" */
-
-    const [checkboxes, setCheckboxes] = useState({
-        description: false,
-        status: false,
-        key: false,
-        location: false,
-        fields: false
-    });
+    useEffect(() => {
+        if (currentPath === '/wp-admin/admin.php?page=cfe-main') {
+            fetch(cfeSettings.rest_url, {
+                method: 'GET',
+                headers: {
+                    'X-WP-Nonce': cfeSettings.nonce,
+                },
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    setCheckboxes(data);
+                })
+                .catch((err) => {
+                    console.error('Error for load settings:', err);
+                });
+        }
+    }, [currentPath]);
 
     const handleCheckboxChange = (e) => {
         const { name, checked } = e.target;
-        setCheckboxes(prev => ({
-            ...prev,
-            [name]: checked
-        }));
+
+        const newState = {
+            ...checkboxes,
+            [name]: checked,
+        };
+
+        setCheckboxes(newState);
+
+        fetch(cfeSettings.rest_url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-WP-Nonce': cfeSettings.nonce,
+            },
+            body: JSON.stringify(newState),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                console.log('Save:', data);
+            })
+            .catch((err) => {
+                console.error('Error for save:', err);
+            });
     };
 
     const handleAddGroupClick = () => {
@@ -32,7 +61,17 @@ const TopMain = ({ onAddPage }) => {
     };
 
     const handleSettingsClick = () => {
-        setIsSettingsOpen(prev => !prev);
+        if (!showSettingsBlock) {
+            setShowSettingsBlock(true);
+            setTimeout(() => {
+                setSettingsOpenAnimation(true);
+            }, 10);
+        } else {
+            setSettingsOpenAnimation(false);
+            setTimeout(() => {
+                setShowSettingsBlock(false);
+            }, 10);
+        }
     };
 
     /* Часть для обработки страницы "Настройки группы" */
@@ -42,20 +81,20 @@ const TopMain = ({ onAddPage }) => {
     const handleInputChange = (e) => {
         const { value } = e.target;
         setInputValue(value);
-    
+
         if (timer) {
             clearTimeout(timer);
         }
-    
+
         const newTimer = setTimeout(() => {
             sendRequest(value);
         }, 1000);
-    
+
         setTimer(newTimer);
     };
-    
+
     const sendRequest = (data) => {
-        console.log('Запрос отправлен на сервер с данными: ', data);
+        console.log('Request was sent successfully: ', data);
     };
 
     let content;
@@ -77,16 +116,16 @@ const TopMain = ({ onAddPage }) => {
 
                         <div className="cfe_topmain_spreading-effect-block">
                             <div
-                                className={`cfe_topmain_spreading-effect cfe_topmain_spreading-effect-left ${isSettingsOpen ? 'activ' : ''}`}
+                                className={`cfe_topmain_spreading-effect cfe_topmain_spreading-effect-left ${settingsOpenAnimation ? 'activ' : ''}`}
                             />
                         </div>
 
                         <button
-                            className={`cfe_topmain_button_settings ${isSettingsOpen ? 'active' : ''}`}
+                            className={`cfe_topmain_button_settings ${settingsOpenAnimation ? 'active' : ''}`}
                             onClick={handleSettingsClick}
                         >
                             <svg
-                                className={isSettingsOpen ? 'rotated' : ''}
+                                className={settingsOpenAnimation ? 'rotated' : ''}
                                 width="24"
                                 height="24"
                                 viewBox="0 0 24 24"
@@ -99,22 +138,16 @@ const TopMain = ({ onAddPage }) => {
 
                         <div className="cfe_topmain_spreading-effect-block">
                             <div
-                                className={`cfe_topmain_spreading-effect cfe_topmain_spreading-effect-right ${isSettingsOpen ? 'activ' : ''}`}
+                                className={`cfe_topmain_spreading-effect cfe_topmain_spreading-effect-right ${settingsOpenAnimation ? 'activ' : ''}`}
                             />
                         </div>
                     </div>
 
-                    {isSettingsOpen && (
-                        <div className="cfe_settings_block open">
+                    {showSettingsBlock && (
+                        <div className={`cfe_settings_block ${settingsOpenAnimation ? 'open' : ''}`}>
                             <h4 className="cfe_settings_block_title">Столбцы</h4>
                             <div className="cfe_settings_checkboxes">
-                                {[
-                                    { name: "description", label: "Описание" },
-                                    { name: "status", label: "Статус" },
-                                    { name: "key", label: "Ключ" },
-                                    { name: "location", label: "Расположение" },
-                                    { name: "fields", label: "Поля" }
-                                ].map(({ name, label }) => (
+                                {[{ name: "description", label: "Описание" }, { name: "status", label: "Статус" }, { name: "key", label: "Ключ" }, { name: "location", label: "Расположение" }, { name: "fields", label: "Поля" }].map(({ name, label }) => (
                                     <label key={name}>
                                         <input
                                             type="checkbox"

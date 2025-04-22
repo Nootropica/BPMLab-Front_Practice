@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 class Cfe_Admin {
     public function __construct() {
