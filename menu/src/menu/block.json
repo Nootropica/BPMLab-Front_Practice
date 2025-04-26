@@ -1,0 +1,45 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "create-block/menu",
+	"version": "0.1.0",
+	"title": "Меню",
+	"category": "design",
+	"icon": "menu",
+	"description": "Кастомное меню с логотипом и адаптивным дизайном",
+	"example": {},
+	"supports": {
+	  "html": false
+	},
+	"textdomain": "menu",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"attributes": {
+	  "items": {
+		"type": "array",
+		"default": [
+		  {
+			"id": 0,
+			"label": "Пункт меню",
+			"url": "#",
+			"target": "_self"
+		  }
+		]
+	  },
+	  "position": {
+		"type": "string",
+		"default": "top",
+		"enum": ["top", "bottom", "left", "right"]
+	  },
+	  "logoId": {
+		"type": "number",
+		"default": 0
+	  },
+	  "logoUrl": {
+		"type": "string",
+		"default": ""
+	  }
+	}
+  }
