@@ -1,0 +1,767 @@
+// Основные переменные
+$primary-color: #2C36F2;
+$active-color: #FF3B30; // Красный для активного состояния
+$secondary-color: #1F1E25;
+$text-color: #00214D;
+$light-color: #FFFFFF;
+$border-radius: 8px;
+$font-family: 'Open Sans', 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+$mobile-breakpoint: 768px;
+
+.wp-block-create-block-menu {
+  outline: none;
+  border: none;
+  box-sizing: border-box;
+  font-family: $font-family;
+  margin: 0;
+  padding: 0;
+  background: $light-color;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  z-index: 9999;
+  border-radius: $border-radius;
+
+  * {
+    box-sizing: inherit;
+  }
+
+  /* Общие стили для всех ссылок меню */
+  .menu-items {
+    border: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    .menu-item {
+      margin: 0;
+      padding: 0;
+      position: relative;
+
+      a {
+        color: $text-color;
+        text-decoration: none;
+        display: block;
+        padding: 12px 16px;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 1.5;
+        position: relative;
+        border: none;
+        transition: color 0.2s ease;
+
+        /* Эффект при наведении */
+        &:hover {
+          outline: none;
+          color: $primary-color;
+          border: none;
+        }
+
+        /* Эффект при нажатии */
+        &:active {
+          outline: none;
+          border: none;
+          color: $active-color;
+          font-weight: 600;
+          
+          &::after {
+            outline: none;
+            content: '';
+            position: absolute;
+            bottom: 0;
+            background-color: $active-color;
+            border-radius: 3px 3px 0 0;
+            border: none;
+          }
+        }
+
+        /* Стили для активной/текущей страницы */
+        &[aria-current="page"],
+        &.current-menu-item,
+        &.current-page-item,
+        &.active {
+          color: $active-color !important;
+          font-weight: 600;
+          
+          &::after {
+            content: '';
+            position: absolute;
+            background-color: $active-color;
+            border-radius: 3px 3px 0 0;
+          }
+        }
+      }
+    }
+  }
+
+  /* Контейнер для содержимого */
+  .menu-content {
+    border-radius: $border-radius;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* Логотип */
+  .menu-logo {
+    outline: none;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    cursor: pointer;
+    
+    img {
+      height: 32px;
+      width: auto;
+      max-width: 120px;
+      object-fit: contain;
+    }
+  }
+
+  /* Мобильное меню - общие стили */
+  .mobile-menu-toggle {
+    display: none;
+    cursor: pointer;
+    padding: 16px;
+    margin-right: -16px;
+    z-index: 9999;
+    
+    .hamburger {
+      width: 24px;
+      height: 2px;
+      background: $text-color;
+      position: relative;
+      transition: all 0.3s ease;
+      
+      &::before, &::after {
+        content: '';
+        position: absolute;
+        width: 24px;
+        height: 2px;
+        background: $text-color;
+        transition: all 0.3s ease;
+      }
+      
+      &::before {
+        top: -6px;
+      }
+      
+      &::after {
+        top: 6px;
+      }
+    }
+    
+    &.active .hamburger {
+      background: transparent;
+      
+      &::before {
+        transform: rotate(45deg);
+        top: 0;
+      }
+      
+      &::after {
+        transform: rotate(-45deg);
+        top: 0;
+      }
+    }
+  }
+
+  .mobile-menu-container {
+    display: none;
+    position: fixed;
+    top: 72px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba($secondary-color, 0.98);
+    z-index: 9998;
+    overflow-y: auto;
+    padding: 20px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    
+    &.active {
+      transform: translateX(0);
+    }
+    
+    .mobile-menu-items {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      
+      .mobile-menu-item {
+        margin-bottom: 16px;
+        
+        a {
+          color: $light-color;
+          font-size: 18px;
+          font-weight: 500;
+          text-decoration: none;
+          display: block;
+          padding: 12px 16px;
+          border-radius: $border-radius;
+          transition: all 0.2s ease;
+          
+          &:hover, &:active {
+            background: rgba($light-color, 0.1);
+            color: $light-color;
+          }
+          
+          &[aria-current="page"],
+          &.current-menu-item,
+          &.current-page-item,
+          &.active {
+            color: $active-color !important;
+            font-weight: 600;
+            background: rgba($active-color, 0.1);
+          }
+        }
+      }
+    }
+    
+    .mobile-menu-footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid rgba($light-color, 0.2);
+      color: rgba($light-color, 0.8);
+      font-size: 14px;
+      
+      .mobile-menu-cta {
+        display: block;
+        background: $primary-color;
+        color: white;
+        text-align: center;
+        padding: 16px;
+        border-radius: $border-radius;
+        font-weight: 600;
+        margin-bottom: 20px;
+        text-decoration: none;
+        transition: background 0.2s ease;
+        
+        &:hover {
+          background: darken($primary-color, 10%);
+        }
+      }
+      
+      .mobile-menu-contacts {
+        line-height: 1.6;
+        
+        p {
+          margin: 8px 0;
+        }
+        
+        strong {
+          color: $light-color;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  /* Верхнее меню */
+  &.menu-top {
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    height: 72px;
+    padding: 0 24px;
+    border-radius: 0 0 $border-radius $border-radius;
+
+    .menu-content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .menu-logo {
+      padding-right: 40px;
+      
+      img {
+        height: 32px;
+      }
+    }
+
+    .menu-items {
+      .menu-item a {
+        &:focus {
+          outline: none;
+          box-shadow: none;
+        }
+        color: #00214D;
+        padding: 24px 16px;
+        
+        &:active::after,
+        &[aria-current="page"]::after,
+        &.current-menu-item::after,
+        &.current-page-item::after,
+        &.active::after {
+          color: $active-color;
+          outline: none;
+          left: 8px;
+          right: 8px;
+          bottom: 8px;
+          height: 2px;
+        }
+      }
+    }
+
+    .menu-right-section {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-left: auto;
+
+      .search-icon,
+      .user-icon {
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        svg {
+          width: 100%;
+          height: 100%;
+          fill: $text-color;
+          transition: fill 0.2s ease;
+        }
+
+        &:hover svg {
+          fill: $primary-color;
+        }
+      }
+
+      .cta-button {
+        background: $primary-color;
+        color: white;
+        border: none;
+        border-radius: $border-radius;
+        padding: 10px 16px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+
+        &:hover {
+          background: darken($primary-color, 10%);
+        }
+      }
+    }
+  }
+
+  /* Нижнее меню */
+  &.menu-bottom {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    height: 72px;
+    padding: 0 24px;
+    border-radius: $border-radius $border-radius 0 0;
+
+    .menu-content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .menu-logo {
+      padding-right: 40px;
+      
+      img {
+        height: 32px;
+      }
+    }
+
+    .menu-items {
+      .menu-item a {
+        color: #00214D;
+        &:focus {
+          outline: none;
+          box-shadow: none;
+        }
+        padding: 24px 16px;
+        
+        &:active::after,
+        &[aria-current="page"]::after,
+        &.current-menu-item::after,
+        &.current-page-item::after,
+        &.active::after {
+          color: $active-color;
+          outline: none;
+          left: 8px;
+          right: 8px;
+          bottom: auto;
+          top: 8px;
+          height: 2px;
+        }
+      }
+    }
+
+    .menu-right-section {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-left: auto;
+
+      .search-icon,
+      .user-icon {
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        svg {
+          width: 100%;
+          height: 100%;
+          fill: $text-color;
+          transition: fill 0.2s ease;
+        }
+
+        &:hover svg {
+          fill: $primary-color;
+        }
+      }
+
+      .cta-button {
+        background: $primary-color;
+        color: white;
+        border: none;
+        border-radius: $border-radius;
+        padding: 10px 16px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+
+        &:hover {
+          background: darken($primary-color, 10%);
+        }
+      }
+    }
+  }
+
+  /* Левое меню */
+  &.menu-left {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 280px;
+    height: 100vh;
+    margin: 0;
+    border-right: 1px solid #eee;
+    overflow-y: auto;
+    border-radius: 0 $border-radius $border-radius 0;
+
+    .menu-content {
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+      padding: 0;
+    }
+
+    .menu-logo {
+      height: auto;
+      padding: 24px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #eee;
+      
+      img {
+        height: 40px;
+        max-height: none;
+      }
+    }
+
+    .menu-items {
+      flex-direction: column;
+      gap: 0;
+      padding: 0;
+
+      .menu-item {
+        width: 100%;
+        
+        a {
+          padding: 16px 24px;
+          border-radius: 0;
+          
+          &:active,
+          &[aria-current="page"],
+          &.current-menu-item,
+          &.current-page-item,
+          &.active {
+            &::after {
+              color: $active-color;
+              outline: none;
+              left: 24px;
+              right: 24px;
+              bottom: 0;
+              top: auto;
+              height: 2px;
+            }
+          }
+        }
+      }
+    }
+
+    .menu-footer {
+      margin-top: auto;
+      padding: 24px;
+      border-top: 1px solid #eee;
+
+      .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        
+        .user-avatar {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: #f5f5f5;
+          overflow: hidden;
+          
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+
+        .user-info {
+          .user-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: $text-color;
+          }
+
+          .user-email {
+            font-size: 12px;
+            color: lighten($text-color, 30%);
+          }
+        }
+      }
+    }
+  }
+
+  /* Правое меню */
+  &.menu-right {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 280px;
+    height: 100vh;
+    margin: 0;
+    border-left: 1px solid #eee;
+    overflow-y: auto;
+    border-radius: $border-radius 0 0 $border-radius;
+
+    .menu-content {
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+      padding: 0;
+    }
+
+    .menu-logo {
+      height: auto;
+      padding: 24px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #eee;
+      
+      img {
+        height: 40px;
+        max-height: none;
+      }
+    }
+
+    .menu-items {
+      flex-direction: column;
+      gap: 0;
+      padding: 0;
+
+      .menu-item {
+        width: 100%;
+        
+        a {
+          padding: 16px 24px;
+          border-radius: 0;
+          
+          &:active,
+          &[aria-current="page"],
+          &.current-menu-item,
+          &.current-page-item,
+          &.active {
+            &::after {
+              color: $active-color;
+              outline: none;
+              left: 24px;
+              right: 24px;
+              bottom: 0;
+              top: auto;
+              height: 2px;
+            }
+          }
+        }
+      }
+    }
+
+    .menu-footer {
+      margin-top: auto;
+      padding: 24px;
+      border-top: 1px solid #eee;
+
+      .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        
+        .user-avatar {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: #f5f5f5;
+          overflow: hidden;
+          
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+
+        .user-info {
+          .user-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: $text-color;
+          }
+
+          .user-email {
+            font-size: 12px;
+            color: lighten($text-color, 30%);
+          }
+        }
+      }
+    }
+  }
+
+  /* Совместимость с WordPress admin bar */
+  .admin-bar &.menu-top {
+    top: 32px !important;
+
+    @media (max-width: 782px) {
+      top: 46px;
+    }
+  }
+
+  .admin-bar &.menu-left,
+  .admin-bar &.menu-right {
+    top: 32px;
+    height: calc(100vh - 32px);
+
+    @media (max-width: 782px) {
+      top: 46px;
+      height: calc(100vh - 46px);
+    }
+  }
+
+  /* Адаптация для мобильных устройств */
+  @media (max-width: $mobile-breakpoint) {
+    // Для всех типов меню
+    &.menu-top, &.menu-bottom {
+      height: 60px;
+      padding: 0 16px;
+      
+      .menu-content {
+        padding: 0;
+      }
+      
+      .menu-logo {
+        padding-right: 0;
+        
+        img {
+          height: 28px;
+        }
+      }
+      
+      .menu-items {
+        display: none;
+      }
+      
+      .menu-right-section {
+        .search-icon, .user-icon, .cta-button {
+          display: none;
+        }
+      }
+      
+	  .mobile-menu-toggle {
+		outline: none !important;
+		box-shadow: none !important;
+		display: block;
+		margin-left: auto; // Убираем это свойство или заменяем на margin-left: 0;
+		margin-right: 16px; // Добавляем отступ справа
+		padding: 12px; // Уменьшаем padding для компактности
+		background: none;
+		border: none;
+		&:focus {
+			outline: none !important;
+			box-shadow: none !important;
+		  }
+		&:active {
+			outline: none !important;
+			box-shadow: none !important;
+		}  
+		.hamburger {
+			outline: none;
+		  width: 20px; // Уменьшаем ширину
+		  height: 2px;
+		  background: $text-color;
+		  position: relative;
+		  
+		  &::before, &::after {
+			outline: none;
+			width: 20px; // Уменьшаем ширину
+			height: 2px;
+		  }
+		  
+		  &::before {
+			outline: none;
+			top: -6px;
+		  }
+		  
+		  &::after {
+			outline: none;
+			top: 6px;
+		  }
+		}
+	  }
+	
+	  // Для боковых меню
+	  &.menu-left, &.menu-right {
+		.mobile-menu-toggle {
+			outline: none;
+		  margin-left: auto; // Оставляем auto для выравнивания вправо
+		  margin-right: 0; // Убираем правый отступ
+		}
+	  }
+	}
+    
+    // Показываем мобильное меню
+    .mobile-menu-container {
+      display: block;
+    }
+  }
+}
