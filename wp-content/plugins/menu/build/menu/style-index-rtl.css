@@ -14,7 +14,9 @@
   position: fixed;
   z-index: 9999;
   border-radius: 8px;
+  overflow: visible !important;
   /* Общие стили для всех ссылок меню */
+  /* Стили для подменю */
   /* Контейнер для содержимого */
   /* Логотип */
   /* Мобильное меню - общие стили */
@@ -29,6 +31,7 @@
   box-sizing: inherit;
 }
 .wp-block-create-block-menu .menu-items {
+  position: relative;
   border: none;
   list-style: none;
   margin: 0;
@@ -42,10 +45,20 @@
   padding: 0;
   position: relative;
 }
+.wp-block-create-block-menu .menu-items .menu-item.has-submenu:hover .submenu {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.wp-block-create-block-menu .menu-items .menu-item.has-submenu:hover .dropdown-arrow {
+  transform: rotate(-180deg);
+}
 .wp-block-create-block-menu .menu-items .menu-item a {
   color: #00214D;
   text-decoration: none;
-  display: block;
+  display: flex;
+  align-items: center;
   padding: 12px 16px;
   font-weight: 500;
   font-size: 16px;
@@ -53,9 +66,6 @@
   position: relative;
   border: none;
   transition: color 0.2s ease;
-  /* Эффект при наведении */
-  /* Эффект при нажатии */
-  /* Стили для активной/текущей страницы */
 }
 .wp-block-create-block-menu .menu-items .menu-item a:hover {
   outline: none;
@@ -68,24 +78,38 @@
   color: #FF3B30;
   font-weight: 600;
 }
-.wp-block-create-block-menu .menu-items .menu-item a:active::after {
-  outline: none;
-  content: "";
+.wp-block-create-block-menu .submenu {
+  display: none;
   position: absolute;
-  bottom: 0;
-  background-color: #FF3B30;
-  border-radius: 3px 3px 0 0;
-  border: none;
+  top: 100%;
+  right: 0;
+  min-width: 200px;
+  background: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  z-index: 100;
+  padding: 8px 0;
+  list-style: none;
+  margin: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
 }
-.wp-block-create-block-menu .menu-items .menu-item a[aria-current=page], .wp-block-create-block-menu .menu-items .menu-item a.current-menu-item, .wp-block-create-block-menu .menu-items .menu-item a.current-page-item, .wp-block-create-block-menu .menu-items .menu-item a.active {
-  color: #FF3B30 !important;
-  font-weight: 600;
+.wp-block-create-block-menu .submenu .submenu-item a {
+  padding: 10px 16px;
+  display: block;
+  color: #00214D;
+  font-size: 14px;
 }
-.wp-block-create-block-menu .menu-items .menu-item a[aria-current=page]::after, .wp-block-create-block-menu .menu-items .menu-item a.current-menu-item::after, .wp-block-create-block-menu .menu-items .menu-item a.current-page-item::after, .wp-block-create-block-menu .menu-items .menu-item a.active::after {
-  content: "";
-  position: absolute;
-  background-color: #FF3B30;
-  border-radius: 3px 3px 0 0;
+.wp-block-create-block-menu .submenu .submenu-item a:hover {
+  background: rgba(44, 54, 242, 0.1);
+  color: #2C36F2;
+}
+.wp-block-create-block-menu .dropdown-arrow {
+  margin-right: 5px;
+  font-size: 0.7em;
+  transition: transform 0.2s ease;
 }
 .wp-block-create-block-menu .menu-content {
   border-radius: 8px;
@@ -94,7 +118,7 @@
   justify-content: space-between;
   align-items: center;
   height: 100%;
-  overflow: hidden;
+  overflow: visible !important;
 }
 .wp-block-create-block-menu .menu-logo {
   outline: none;
@@ -150,7 +174,7 @@
   top: 0;
 }
 .wp-block-create-block-menu .mobile-menu-container {
-  display: none;
+  display: block !important;
   position: fixed;
   top: 72px;
   right: 0;
@@ -165,6 +189,7 @@
 }
 .wp-block-create-block-menu .mobile-menu-container.active {
   transform: translateX(0);
+  display: block !important;
 }
 .wp-block-create-block-menu .mobile-menu-container .mobile-menu-items {
   list-style: none;
@@ -234,18 +259,23 @@
   margin: 0;
   height: 72px;
   padding: 0 24px;
-  border-radius: 0 0 8px 8px;
+  border-radius: 8px;
 }
 .wp-block-create-block-menu.menu-top .menu-content {
   max-width: 1440px;
   margin: 0 auto;
   padding: 0 24px;
+  overflow: visible !important;
 }
 .wp-block-create-block-menu.menu-top .menu-logo {
   padding-left: 40px;
 }
 .wp-block-create-block-menu.menu-top .menu-logo img {
   height: 32px;
+}
+.wp-block-create-block-menu.menu-top .menu-items {
+  position: relative;
+  overflow: visible !important;
 }
 .wp-block-create-block-menu.menu-top .menu-items .menu-item a {
   color: #00214D;
@@ -312,12 +342,24 @@
   margin: 0;
   height: 72px;
   padding: 0 24px;
-  border-radius: 8px 8px 0 0;
+  border-radius: 8px;
+}
+.wp-block-create-block-menu.menu-bottom .menu-item {
+  position: relative;
+}
+.wp-block-create-block-menu.menu-bottom .menu-item .submenu {
+  top: auto;
+  bottom: 100%;
+  transform: translateY(-4px);
+}
+.wp-block-create-block-menu.menu-bottom .menu-item:hover .submenu {
+  transform: translateY(0);
 }
 .wp-block-create-block-menu.menu-bottom .menu-content {
   max-width: 1440px;
   margin: 0 auto;
   padding: 0 24px;
+  overflow: visible !important;
 }
 .wp-block-create-block-menu.menu-bottom .menu-logo {
   padding-left: 40px;
@@ -391,13 +433,14 @@
   margin: 0;
   border-left: 1px solid #eee;
   overflow-y: auto;
-  border-radius: 8px 0 0 8px;
+  border-radius: 8px;
 }
 .wp-block-create-block-menu.menu-left .menu-content {
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
   padding: 0;
+  overflow: visible !important;
 }
 .wp-block-create-block-menu.menu-left .menu-logo {
   height: auto;
@@ -471,13 +514,14 @@
   margin: 0;
   border-right: 1px solid #eee;
   overflow-y: auto;
-  border-radius: 0 8px 8px 0;
+  border-radius: 8px;
 }
 .wp-block-create-block-menu.menu-right .menu-content {
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
   padding: 0;
+  overflow: visible !important;
 }
 .wp-block-create-block-menu.menu-right .menu-logo {
   height: auto;
@@ -561,11 +605,17 @@
   }
 }
 @media (max-width: 768px) {
+  .wp-block-create-block-menu {
+    display: block !important;
+  }
   .wp-block-create-block-menu.menu-top, .wp-block-create-block-menu.menu-bottom {
     height: 60px;
     padding: 0 16px;
   }
-  .wp-block-create-block-menu.menu-top .menu-content, .wp-block-create-block-menu.menu-bottom .menu-content {
+  .wp-block-create-block-menu.menu-top .menu-item, .wp-block-create-block-menu.menu-bottom .menu-item {
+    position: relative;
+  }
+  .wp-block-create-block-menu.menu-top .menu-item .menu-content, .wp-block-create-block-menu.menu-bottom .menu-item .menu-content {
     padding: 0;
   }
   .wp-block-create-block-menu.menu-top .menu-logo, .wp-block-create-block-menu.menu-bottom .menu-logo {
@@ -618,12 +668,98 @@
     outline: none;
     top: 6px;
   }
-  .wp-block-create-block-menu.menu-top.menu-left .mobile-menu-toggle, .wp-block-create-block-menu.menu-top.menu-right .mobile-menu-toggle, .wp-block-create-block-menu.menu-bottom.menu-left .mobile-menu-toggle, .wp-block-create-block-menu.menu-bottom.menu-right .mobile-menu-toggle {
-    outline: none;
-    margin-right: auto;
-    margin-left: 0;
+  .wp-block-create-block-menu.menu-top .menu-item, .wp-block-create-block-menu.menu-bottom .menu-item {
+    position: relative;
   }
-  .wp-block-create-block-menu .mobile-menu-container {
+  .wp-block-create-block-menu.menu-top .menu-item.has-submenu:hover .submenu, .wp-block-create-block-menu.menu-bottom .menu-item.has-submenu:hover .submenu {
     display: block;
+  }
+  .wp-block-create-block-menu.menu-top .menu-item .dropdown-arrow, .wp-block-create-block-menu.menu-bottom .menu-item .dropdown-arrow {
+    margin-right: 5px;
+    font-size: 0.7em;
+  }
+  .wp-block-create-block-menu.menu-top .submenu, .wp-block-create-block-menu.menu-bottom .submenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 1000;
+    min-width: 200px;
+    background: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    z-index: 100;
+    padding: 8px 0;
+    list-style: none;
+    margin: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+  }
+  .wp-block-create-block-menu .wp-block-create-block-menu.menu-top .submenu, .wp-block-create-block-menu .wp-block-create-block-menu.menu-bottom .submenu {
+    overflow: visible;
+  }
+  .wp-block-create-block-menu.menu-top .submenu .submenu-item a, .wp-block-create-block-menu.menu-bottom .submenu .submenu-item a {
+    padding: 10px 16px;
+    display: block;
+    color: #00214D;
+    font-size: 14px;
+  }
+  .wp-block-create-block-menu.menu-top .submenu .submenu-item a:hover, .wp-block-create-block-menu.menu-bottom .submenu .submenu-item a:hover {
+    background: rgba(44, 54, 242, 0.1);
+    color: #2C36F2;
+  }
+  .wp-block-create-block-menu.menu-top.menu-left .menu-item, .wp-block-create-block-menu.menu-top.menu-right .menu-item, .wp-block-create-block-menu.menu-bottom.menu-left .menu-item, .wp-block-create-block-menu.menu-bottom.menu-right .menu-item {
+    width: 100%;
+  }
+  .wp-block-create-block-menu.menu-top.menu-left .submenu, .wp-block-create-block-menu.menu-top.menu-right .submenu, .wp-block-create-block-menu.menu-bottom.menu-left .submenu, .wp-block-create-block-menu.menu-bottom.menu-right .submenu {
+    position: static;
+    box-shadow: none;
+    padding-right: 20px;
+    display: none;
+    background: transparent;
+  }
+  .wp-block-create-block-menu.menu-top.menu-left .submenu .submenu-item a, .wp-block-create-block-menu.menu-top.menu-right .submenu .submenu-item a, .wp-block-create-block-menu.menu-bottom.menu-left .submenu .submenu-item a, .wp-block-create-block-menu.menu-bottom.menu-right .submenu .submenu-item a {
+    padding-right: 30px;
+  }
+  .wp-block-create-block-menu.menu-top.menu-left .wp-block-create-block-menu.menu-top,
+  .wp-block-create-block-menu.menu-top.menu-left .wp-block-create-block-menu.menu-bottom, .wp-block-create-block-menu.menu-top.menu-right .wp-block-create-block-menu.menu-top,
+  .wp-block-create-block-menu.menu-top.menu-right .wp-block-create-block-menu.menu-bottom, .wp-block-create-block-menu.menu-bottom.menu-left .wp-block-create-block-menu.menu-top,
+  .wp-block-create-block-menu.menu-bottom.menu-left .wp-block-create-block-menu.menu-bottom, .wp-block-create-block-menu.menu-bottom.menu-right .wp-block-create-block-menu.menu-top,
+  .wp-block-create-block-menu.menu-bottom.menu-right .wp-block-create-block-menu.menu-bottom {
+    overflow: visible;
+  }
+  .wp-block-create-block-menu.menu-top.menu-left .wp-block-create-block-menu.menu-top .menu-content,
+  .wp-block-create-block-menu.menu-top.menu-left .wp-block-create-block-menu.menu-bottom .menu-content, .wp-block-create-block-menu.menu-top.menu-right .wp-block-create-block-menu.menu-top .menu-content,
+  .wp-block-create-block-menu.menu-top.menu-right .wp-block-create-block-menu.menu-bottom .menu-content, .wp-block-create-block-menu.menu-bottom.menu-left .wp-block-create-block-menu.menu-top .menu-content,
+  .wp-block-create-block-menu.menu-bottom.menu-left .wp-block-create-block-menu.menu-bottom .menu-content, .wp-block-create-block-menu.menu-bottom.menu-right .wp-block-create-block-menu.menu-top .menu-content,
+  .wp-block-create-block-menu.menu-bottom.menu-right .wp-block-create-block-menu.menu-bottom .menu-content {
+    overflow: visible;
+  }
+  .wp-block-create-block-menu.menu-top.menu-left .wp-block-create-block-menu.menu-top .menu-items,
+  .wp-block-create-block-menu.menu-top.menu-left .wp-block-create-block-menu.menu-bottom .menu-items, .wp-block-create-block-menu.menu-top.menu-right .wp-block-create-block-menu.menu-top .menu-items,
+  .wp-block-create-block-menu.menu-top.menu-right .wp-block-create-block-menu.menu-bottom .menu-items, .wp-block-create-block-menu.menu-bottom.menu-left .wp-block-create-block-menu.menu-top .menu-items,
+  .wp-block-create-block-menu.menu-bottom.menu-left .wp-block-create-block-menu.menu-bottom .menu-items, .wp-block-create-block-menu.menu-bottom.menu-right .wp-block-create-block-menu.menu-top .menu-items,
+  .wp-block-create-block-menu.menu-bottom.menu-right .wp-block-create-block-menu.menu-bottom .menu-items {
+    overflow: visible;
+  }
+  .wp-block-create-block-menu.menu-top.menu-left .menu-item.has-submenu:hover .submenu, .wp-block-create-block-menu.menu-top.menu-right .menu-item.has-submenu:hover .submenu, .wp-block-create-block-menu.menu-bottom.menu-left .menu-item.has-submenu:hover .submenu, .wp-block-create-block-menu.menu-bottom.menu-right .menu-item.has-submenu:hover .submenu {
+    display: block;
+  }
+  .wp-block-create-block-menu .mobile-submenu {
+    display: none;
+    padding-right: 20px;
+    list-style: none;
+    margin: 0;
+  }
+  .wp-block-create-block-menu .mobile-submenu .mobile-submenu-item a {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
+@media (max-width: 768px) and (max-width: 768px) {
+  .wp-block-create-block-menu .menu-item.has-submenu .submenu {
+    display: none !important;
   }
 }

@@ -1,64 +1,85 @@
 // editor.scss - стили только для редактора
 .wp-block-create-block-menu {
-	position: relative !important;
+	position: relative;
 	z-index: 1;
-	margin: 15px 0;
-	border: 1px dashed #ddd;
-	background: #f8f9f9;
-	min-height: 50px;
+	margin: 20px 0;
+	border: 1px solid #e0e0e0;
+	background: #fff;
+	min-height: 80px;
 	width: 100% !important;
 	height: auto !important;
-	font-family: 'Roboto', sans-serif;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	border-radius: 4px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   
 	.menu-editor {
-	  padding: 15px;
+	  padding: 20px;
 	}
   
 	.menu-controls {
-	  margin-bottom: 15px;
+	  margin-bottom: 20px;
 	  display: flex;
 	  flex-wrap: wrap;
-	  gap: 20px;
+	  gap: 15px;
+	  align-items: flex-start;
 	  
 	  .components-select-control {
-		min-width: 200px;
+		min-width: 220px;
+		flex-grow: 1;
 	  }
 	  
 	  .logo-upload {
 		display: flex;
 		align-items: center;
-		gap: 10px;
+		gap: 12px;
+		flex-wrap: wrap;
 		
 		.logo-preview {
 		  img {
-			max-height: 40px;
+			max-height: 50px;
 			width: auto;
+			max-width: 180px;
+			border-radius: 4px;
+			object-fit: contain;
 		  }
 		}
 	  }
 	}
   
 	.menu-preview {
-	  border: 1px solid #ddd;
-	  border-radius: 24px;
-	  padding: 15px;
+	  border: 1px solid #e0e0e0;
+	  border-radius: 8px;
+	  padding: 20px;
 	  background: #fff;
-	  margin-top: 15px;
+	  margin-top: 20px;
 	  
 	  .menu-content {
 		display: flex;
 		align-items: center;
-		gap: 20px;
+		gap: 25px;
+		flex-wrap: wrap;
 		
 		.menu-logo {
 		  img {
-			height: 40px;
+			height: 50px;
 			width: auto;
+			max-width: 150px;
+			object-fit: contain;
 		  }
 		}
 		
 		.mobile-menu-toggle {
 		  display: none;
+		  margin-left: auto;
+		  background: #f0f0f0;
+		  border: none;
+		  padding: 8px 15px;
+		  border-radius: 4px;
+		  cursor: pointer;
+		  
+		  &:hover {
+			background: #e0e0e0;
+		  }
 		}
 	  }
 	}
@@ -66,108 +87,212 @@
 	.menu-items-list {
 	  display: flex;
 	  flex-direction: column;
-	  gap: 10px;
-  
-	  &.vertical {
-		.menu-item {
-		  flex-direction: column;
-		}
-	  }
+	  gap: 12px;
+	  margin-top: 15px;
   
 	  .menu-item {
 		background: #fff;
-		border: 1px solid #ddd;
-		border-radius: 4px;
-		padding: 10px;
+		border: 1px solid #e0e0e0;
+		border-radius: 6px;
+		padding: 15px;
 		display: flex;
 		flex-direction: column;
-		gap: 8px;
+		gap: 10px;
+		position: relative;
+		transition: all 0.2s ease;
   
-		.components-button {
-		  align-self: flex-start;
+		&:hover {
+		  border-color: #c0c0c0;
+		}
+  
+		.menu-item-header {
+		  display: flex;
+		  flex-wrap: wrap;
+		  gap: 10px;
+		  align-items: center;
+		  width: 100%;
+  
+		  .rich-text {
+			flex: 1;
+			min-width: 200px;
+			font-size: 14px;
+		  }
+  
+		  input[type="text"] {
+			flex: 1;
+			min-width: 200px;
+			padding: 8px 12px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			font-size: 14px;
+		  }
+  
+		  select {
+			padding: 8px 12px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			min-width: 150px;
+			font-size: 14px;
+			height: 36px;
+		  }
+  
+		  .menu-item-actions {
+			display: flex;
+			gap: 6px;
+			margin-left: auto;
+  
+			.components-button {
+			  padding: 6px 8px;
+			  height: 36px;
+			  min-width: 36px;
+			}
+		  }
+		}
+  
+		.submenu-items {
+		  margin-top: 10px;
+		  padding-left: 25px;
+		  border-left: 2px solid #f0f0f0;
+		  display: flex;
+		  flex-direction: column;
+		  gap: 10px;
+  
+		  .submenu-item {
+			background: #fafafa;
+			padding: 10px 12px;
+			border-radius: 4px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			align-items: center;
+  
+			.rich-text {
+			  flex: 1;
+			  min-width: 180px;
+			  font-size: 13px;
+			}
+  
+			input[type="text"] {
+			  flex: 1;
+			  min-width: 180px;
+			  padding: 6px 10px;
+			  border: 1px solid #ddd;
+			  border-radius: 4px;
+			  font-size: 13px;
+			}
+  
+			select {
+			  padding: 6px 10px;
+			  border: 1px solid #ddd;
+			  border-radius: 4px;
+			  min-width: 120px;
+			  font-size: 13px;
+			  height: 32px;
+			}
+  
+			.components-button {
+			  padding: 6px;
+			  height: 32px;
+			  min-width: 32px;
+			}
+		  }
 		}
 	  }
   
 	  .components-button.is-primary {
-		margin-top: 10px;
+		margin-top: 15px;
+		align-self: flex-start;
 	  }
 	}
-
-	// New styles from your addition
-	.menu-preview-wrapper {
+  
+	// Mobile menu preview in editor
+	.mobile-menu-preview {
+	  display: none;
 	  margin-top: 20px;
-	  border: 1px dashed #ccc;
+	  border: 1px solid #e0e0e0;
+	  border-radius: 8px;
 	  padding: 15px;
-	}
-
-	.logo-upload-controls {
-	  display: flex;
-	  flex-direction: column;
-	  gap: 10px;
-
-	  .logo-preview-wrapper {
-		img {
-		  max-height: 80px;
-		  width: auto;
-		  display: block;
+	  background: #f9f9f9;
+  
+	  &.is-visible {
+		display: block;
+	  }
+  
+	  .mobile-menu-toggle {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		padding: 10px 15px;
+		background: #fff;
+		border: 1px solid #e0e0e0;
+		border-radius: 4px;
+		cursor: pointer;
+		
+		&:hover {
+		  background: #f5f5f5;
 		}
 	  }
-
-	  .logo-actions {
-		display: flex;
-		gap: 8px;
-	  }
-	}
-
-	.menu-item-controls {
-	  display: flex;
-	  gap: 8px;
-	  margin-top: 8px;
-	  align-items: center;
-
-	  input, select {
-		flex: 1;
-		max-width: 200px;
-	  }
-	}
-
-	.add-menu-item {
-	  margin-top: 15px;
-	}
-  }
   
-  @media (max-width: 768px) {
-	.wp-block-create-block-menu {
-		
-	  .menu-preview {
-		.menu-content {
-		  flex-wrap: wrap;
-		  
-		  .mobile-menu-toggle {
+	  .mobile-menu-items {
+		list-style: none;
+		padding: 0;
+		margin: 10px 0 0 0;
+		display: none;
+		flex-direction: column;
+		gap: 8px;
+  
+		&.is-open {
+		  display: flex;
+		}
+  
+		.mobile-menu-item {
+		  a {
 			display: block;
-			margin-left: auto;
-			background: none;
-			border: 1px solid #ddd;
-			padding: 5px 10px;
+			padding: 10px 15px;
+			background: #fff;
 			border-radius: 4px;
-			cursor: pointer;
+			text-decoration: none;
+			color: #1e1e1e;
+			font-size: 14px;
+			border: 1px solid #f0f0f0;
 		  }
-		  
-		  .menu-items-list {
-			width: 100%;
+  
+		  .mobile-submenu {
+			list-style: none;
+			padding-left: 20px;
+			margin: 8px 0 0 0;
 			display: none;
-			
-			.menu-item {
-			  flex-direction: column;
+			flex-direction: column;
+			gap: 6px;
+  
+			&.is-open {
+			  display: flex;
+			}
+  
+			.mobile-submenu-item a {
+			  background: #f5f5f5;
+			  font-size: 13px;
+			  padding: 8px 15px;
 			}
 		  }
 		}
+	  }
+	}
+  
+	// Better responsive handling for editor
+	@media (max-width: 600px) {
+	  .menu-controls {
+		flex-direction: column;
+		gap: 15px;
 		
-		&.mobile-menu-open {
-		  .menu-items-list {
-			display: flex;
-		  }
+		.components-select-control {
+		  width: 100%;
 		}
+	  }
+	  
+	  .menu-preview .menu-content {
+		gap: 15px;
 	  }
 	}
   }

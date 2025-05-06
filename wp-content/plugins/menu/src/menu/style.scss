@@ -1,6 +1,6 @@
 // Основные переменные
 $primary-color: #2C36F2;
-$active-color: #FF3B30; // Красный для активного состояния
+$active-color: #FF3B30;
 $secondary-color: #1F1E25;
 $text-color: #00214D;
 $light-color: #FFFFFF;
@@ -20,6 +20,7 @@ $mobile-breakpoint: 768px;
   position: fixed;
   z-index: 9999;
   border-radius: $border-radius;
+  overflow: visible !important; 
 
   * {
     box-sizing: inherit;
@@ -27,6 +28,7 @@ $mobile-breakpoint: 768px;
 
   /* Общие стили для всех ссылок меню */
   .menu-items {
+    position: relative; // Для корректного позиционирования подменю
     border: none;
     list-style: none;
     margin: 0;
@@ -40,10 +42,26 @@ $mobile-breakpoint: 768px;
       padding: 0;
       position: relative;
 
+      &.has-submenu {
+        &:hover {
+          .submenu {
+            display: block;
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+          }
+          
+          .dropdown-arrow {
+            transform: rotate(180deg);
+          }
+        }
+      }
+
       a {
         color: $text-color;
         text-decoration: none;
-        display: block;
+        display: flex;
+        align-items: center;
         padding: 12px 16px;
         font-weight: 500;
         font-size: 16px;
@@ -52,50 +70,61 @@ $mobile-breakpoint: 768px;
         border: none;
         transition: color 0.2s ease;
 
-        /* Эффект при наведении */
         &:hover {
           outline: none;
           color: $primary-color;
           border: none;
         }
 
-        /* Эффект при нажатии */
         &:active {
           outline: none;
           border: none;
           color: $active-color;
           font-weight: 600;
-          
-          &::after {
-            outline: none;
-            content: '';
-            position: absolute;
-            bottom: 0;
-            background-color: $active-color;
-            border-radius: 3px 3px 0 0;
-            border: none;
-          }
-        }
-
-        /* Стили для активной/текущей страницы */
-        &[aria-current="page"],
-        &.current-menu-item,
-        &.current-page-item,
-        &.active {
-          color: $active-color !important;
-          font-weight: 600;
-          
-          &::after {
-            content: '';
-            position: absolute;
-            background-color: $active-color;
-            border-radius: 3px 3px 0 0;
-          }
         }
       }
     }
   }
 
+  /* Стили для подменю */
+  .submenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    background: $light-color;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: $border-radius;
+    z-index: 100;
+    padding: 8px 0;
+    list-style: none;
+    margin: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+
+    .submenu-item {
+      a {
+        padding: 10px 16px;
+        display: block;
+        color: $text-color;
+        font-size: 14px;
+
+        &:hover {
+          background: rgba($primary-color, 0.1);
+          color: $primary-color;
+        }
+      }
+    }
+  }
+
+  .dropdown-arrow {
+    margin-left: 5px;
+    font-size: 0.7em;
+    transition: transform 0.2s ease;
+  }
   /* Контейнер для содержимого */
   .menu-content {
     border-radius: $border-radius;
@@ -104,7 +133,7 @@ $mobile-breakpoint: 768px;
     justify-content: space-between;
     align-items: center;
     height: 100%;
-    overflow: hidden;
+    overflow: visible !important;
   }
 
   /* Логотип */
@@ -172,7 +201,7 @@ $mobile-breakpoint: 768px;
   }
 
   .mobile-menu-container {
-    display: none;
+    display: block !important; // Добавляем это
     position: fixed;
     top: 72px;
     left: 0;
@@ -187,6 +216,7 @@ $mobile-breakpoint: 768px;
     
     &.active {
       transform: translateX(0);
+      display: block !important; 
     }
     
     .mobile-menu-items {
@@ -273,12 +303,13 @@ $mobile-breakpoint: 768px;
     margin: 0;
     height: 72px;
     padding: 0 24px;
-    border-radius: 0 0 $border-radius $border-radius;
+    border-radius: $border-radius;
 
     .menu-content {
       max-width: 1440px;
       margin: 0 auto;
       padding: 0 24px;
+      overflow: visible !important;
     }
 
     .menu-logo {
@@ -290,6 +321,8 @@ $mobile-breakpoint: 768px;
     }
 
     .menu-items {
+      position: relative; 
+      overflow: visible !important;
       .menu-item a {
         &:focus {
           outline: none;
@@ -368,12 +401,25 @@ $mobile-breakpoint: 768px;
     margin: 0;
     height: 72px;
     padding: 0 24px;
-    border-radius: $border-radius $border-radius 0 0;
-
+    border-radius: $border-radius;
+    .menu-item {
+      position: relative;
+      .submenu {
+        top: auto;
+        bottom: 100%; // Показываем над пунктом меню
+        transform: translateY(-4px); // Начальное положение для анимации
+      }
+      &:hover {
+        .submenu {
+          transform: translateY(0); // Финальное положение
+        }
+      }
+    }  
     .menu-content {
       max-width: 1440px;
       margin: 0 auto;
       padding: 0 24px;
+      overflow: visible !important;
     }
 
     .menu-logo {
@@ -464,13 +510,14 @@ $mobile-breakpoint: 768px;
     margin: 0;
     border-right: 1px solid #eee;
     overflow-y: auto;
-    border-radius: 0 $border-radius $border-radius 0;
+    border-radius: $border-radius;
 
     .menu-content {
       flex-direction: column;
       justify-content: flex-start;
       align-items: stretch;
       padding: 0;
+      overflow: visible !important;
     }
 
     .menu-logo {
@@ -566,13 +613,14 @@ $mobile-breakpoint: 768px;
     margin: 0;
     border-left: 1px solid #eee;
     overflow-y: auto;
-    border-radius: $border-radius 0 0 $border-radius;
+    border-radius: $border-radius;
 
     .menu-content {
       flex-direction: column;
       justify-content: flex-start;
       align-items: stretch;
       padding: 0;
+      overflow: visible !important;
     }
 
     .menu-logo {
@@ -681,14 +729,16 @@ $mobile-breakpoint: 768px;
   /* Адаптация для мобильных устройств */
   @media (max-width: $mobile-breakpoint) {
     // Для всех типов меню
+    display: block !important; // Добавляем это
     &.menu-top, &.menu-bottom {
       height: 60px;
       padding: 0 16px;
-      
+      .menu-item {
+        position: relative; 
       .menu-content {
         padding: 0;
       }
-      
+    }
       .menu-logo {
         padding-right: 0;
         
@@ -711,9 +761,9 @@ $mobile-breakpoint: 768px;
 		outline: none !important;
 		box-shadow: none !important;
 		display: block;
-		margin-left: auto; // Убираем это свойство или заменяем на margin-left: 0;
-		margin-right: 16px; // Добавляем отступ справа
-		padding: 12px; // Уменьшаем padding для компактности
+		margin-left: auto; 
+		margin-right: 16px; 
+		padding: 12px;
 		background: none;
 		border: none;
 		&:focus {
@@ -726,14 +776,14 @@ $mobile-breakpoint: 768px;
 		}  
 		.hamburger {
 			outline: none;
-		  width: 20px; // Уменьшаем ширину
+		  width: 20px; 
 		  height: 2px;
 		  background: $text-color;
 		  position: relative;
 		  
 		  &::before, &::after {
 			outline: none;
-			width: 20px; // Уменьшаем ширину
+			width: 20px; 
 			height: 2px;
 		  }
 		  
@@ -748,20 +798,115 @@ $mobile-breakpoint: 768px;
 		  }
 		}
 	  }
-	
+	  .menu-item {
+    position: relative;
+
+    &.has-submenu {
+      &:hover {
+        .submenu {
+          display: block;
+        }
+      }
+    }
+
+    .dropdown-arrow {
+      margin-left: 5px;
+      font-size: 0.7em;
+    }
+  }
+
+  .submenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000; 
+    min-width: 200px;
+    background: $light-color;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: $border-radius;
+    z-index: 100;
+    padding: 8px 0;
+    list-style: none;
+    margin: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+
+  .wp-block-create-block-menu & {
+    overflow: visible;
+  }
+
+  .submenu-item {
+    a {
+      padding: 10px 16px;
+      display: block;
+      color: $text-color;
+      font-size: 14px;
+
+      &:hover {
+        background: rgba($primary-color, 0.1);
+        color: $primary-color;
+      }
+    }
+  }
+}
 	  // Для боковых меню
-	  &.menu-left, &.menu-right {
-		.mobile-menu-toggle {
-			outline: none;
-		  margin-left: auto; // Оставляем auto для выравнивания вправо
-		  margin-right: 0; // Убираем правый отступ
-		}
-	  }
+    &.menu-left, &.menu-right {
+      .menu-item {
+        width: 100%;
+      }
+  
+      .submenu {
+        position: static;
+        box-shadow: none;
+        padding-left: 20px;
+        display: none;
+        background: transparent;
+  
+        .submenu-item a {
+          padding-left: 30px;
+        }
+      }
+
+  .wp-block-create-block-menu.menu-top,
+  .wp-block-create-block-menu.menu-bottom {
+    overflow: visible;
+    
+    .menu-content {
+      overflow: visible;
+    }
+    
+    .menu-items {
+      overflow: visible;
+    }
+  }
+      .menu-item.has-submenu:hover .submenu {
+        display: block;
+      }
+    }
 	}
     
     // Показываем мобильное меню
-    .mobile-menu-container {
-      display: block;
+    .mobile-submenu {
+      display: none;
+      padding-left: 20px;
+      list-style: none;
+      margin: 0;
+  
+      .mobile-submenu-item a {
+        font-size: 16px;
+        color: rgba($light-color, 0.8);
+      }
+    }
+  
+    @media (max-width: $mobile-breakpoint) {
+      .menu-item.has-submenu {
+        .submenu {
+          display: none !important;
+        }
+      }
     }
   }
 }

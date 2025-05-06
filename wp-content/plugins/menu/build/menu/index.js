@@ -8,7 +8,7 @@
   \*****************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"create-block/menu","version":"0.1.0","title":"Меню","category":"design","icon":"menu","description":"Кастомное меню с логотипом и адаптивным дизайном","example":{},"supports":{"html":false},"textdomain":"menu","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js","attributes":{"items":{"type":"array","default":[{"id":0,"label":"Пункт меню","url":"#","target":"_self"}]},"position":{"type":"string","default":"top","enum":["top","bottom","left","right"]},"logoId":{"type":"number","default":0},"logoUrl":{"type":"string","default":""}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"create-block/menu","version":"0.1.0","title":"Меню","category":"design","icon":"menu","description":"Кастомное меню с логотипом, многоуровневой структурой и адаптивным дизайном","example":{},"supports":{"html":false},"textdomain":"menu","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js","attributes":{"items":{"type":"array","default":[{"id":0,"label":"Пункт меню","url":"#","target":"_self","submenu":[]}]},"position":{"type":"string","default":"top","enum":["top","bottom","left","right"]},"logoId":{"type":"number","default":0},"logoUrl":{"type":"string","default":""}}}');
 
 /***/ }),
 
@@ -41,13 +41,22 @@ const {
 } = wp.element;
 const {
   Button,
-  SelectControl
+  SelectControl,
+  PanelBody,
+  PanelRow
 } = wp.components;
 
 
 
 const defaultItem = () => ({
   id: Date.now(),
+  label: '',
+  url: '',
+  target: '_self',
+  submenu: []
+});
+const defaultSubItem = () => ({
+  id: Date.now() + Math.random(),
   label: '',
   url: '',
   target: '_self'
@@ -84,6 +93,7 @@ registerBlockType('create-block/menu', {
     const [items, setItems] = useState(attributes.items);
     const [position, setPosition] = useState(attributes.position);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [expandedItems, setExpandedItems] = useState([]);
     useEffect(() => {
       setAttributes({
         items,
@@ -98,6 +108,37 @@ registerBlockType('create-block/menu', {
     };
     const addItem = () => setItems([...items, defaultItem()]);
     const removeItem = id => setItems(items.filter(item => item.id !== id));
+    const addSubItem = parentId => {
+      setItems(items.map(item => item.id === parentId ? {
+        ...item,
+        submenu: [...item.submenu, defaultSubItem()]
+      } : item));
+      if (!expandedItems.includes(parentId)) {
+        setExpandedItems([...expandedItems, parentId]);
+      }
+    };
+    const removeSubItem = (parentId, subItemId) => {
+      setItems(items.map(item => item.id === parentId ? {
+        ...item,
+        submenu: item.submenu.filter(sub => sub.id !== subItemId)
+      } : item));
+    };
+    const updateSubItem = (parentId, subItemId, field, value) => {
+      setItems(items.map(item => item.id === parentId ? {
+        ...item,
+        submenu: item.submenu.map(sub => sub.id === subItemId ? {
+          ...sub,
+          [field]: value
+        } : sub)
+      } : item));
+    };
+    const toggleSubmenu = itemId => {
+      if (expandedItems.includes(itemId)) {
+        setExpandedItems(expandedItems.filter(id => id !== itemId));
+      } else {
+        setExpandedItems([...expandedItems, itemId]);
+      }
+    };
     const onSelectLogo = media => {
       setAttributes({
         logoId: media.id,
@@ -176,34 +217,89 @@ registerBlockType('create-block/menu', {
               className: "menu-items-list",
               children: [items.map(item => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
                 className: "menu-item",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(RichText, {
-                  tagName: "div",
-                  placeholder: __('Название пункта'),
-                  value: item.label,
-                  onChange: value => updateItem(item.id, 'label', value)
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-                  type: "text",
-                  placeholder: __('URL ссылки'),
-                  value: item.url,
-                  onChange: e => updateItem(item.id, 'url', e.target.value)
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("select", {
-                  value: item.target,
-                  onChange: e => updateItem(item.id, 'target', e.target.value),
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
-                    value: "_self",
-                    children: __('Текущая вкладка')
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
-                    value: "_blank",
-                    children: __('Новая вкладка')
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                  className: "menu-item-header",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(RichText, {
+                    tagName: "div",
+                    placeholder: __('Название пункта'),
+                    value: item.label,
+                    onChange: value => updateItem(item.id, 'label', value)
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+                    type: "text",
+                    placeholder: __('URL ссылки'),
+                    value: item.url,
+                    onChange: e => updateItem(item.id, 'url', e.target.value)
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("select", {
+                    value: item.target,
+                    onChange: e => updateItem(item.id, 'target', e.target.value),
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                      value: "_self",
+                      children: __('Текущая вкладка')
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                      value: "_blank",
+                      children: __('Новая вкладка')
+                    })]
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+                    className: "menu-item-actions",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Button, {
+                      className: "is-secondary",
+                      onClick: () => removeItem(item.id),
+                      icon: "trash",
+                      label: __('Удалить пункт')
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Button, {
+                      className: "is-secondary",
+                      onClick: () => addSubItem(item.id),
+                      icon: "plus",
+                      label: __('Добавить подпункт')
+                    }), item.submenu.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Button, {
+                      className: "is-secondary",
+                      onClick: () => toggleSubmenu(item.id),
+                      icon: expandedItems.includes(item.id) ? "arrow-up" : "arrow-down",
+                      label: __('Показать/скрыть подпункты')
+                    })]
                   })]
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-                  className: "components-button is-secondary",
-                  onClick: () => removeItem(item.id),
-                  children: __('Удалить')
+                }), item.submenu.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("ul", {
+                  className: "submenu",
+                  style: {
+                    display: expandedItems.includes(item.id) ? 'block' : 'none',
+                    opacity: expandedItems.includes(item.id) ? 1 : 0,
+                    visibility: expandedItems.includes(item.id) ? 'visible' : 'hidden',
+                    transform: expandedItems.includes(item.id) ? 'translateY(0)' : 'translateY(10px)'
+                  },
+                  children: item.submenu.map(subItem => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("li", {
+                    className: "submenu-item",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(RichText, {
+                      tagName: "div",
+                      placeholder: __('Название подпункта'),
+                      value: subItem.label,
+                      onChange: value => updateSubItem(item.id, subItem.id, 'label', value)
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+                      type: "text",
+                      placeholder: __('URL ссылки'),
+                      value: subItem.url,
+                      onChange: e => updateSubItem(item.id, subItem.id, 'url', e.target.value)
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("select", {
+                      value: subItem.target,
+                      onChange: e => updateSubItem(item.id, subItem.id, 'target', e.target.value),
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                        value: "_self",
+                        children: __('Текущая вкладка')
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                        value: "_blank",
+                        children: __('Новая вкладка')
+                      })]
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Button, {
+                      className: "is-secondary",
+                      onClick: () => removeSubItem(item.id, subItem.id),
+                      icon: "trash",
+                      label: __('Удалить подпункт')
+                    })]
+                  }, subItem.id))
                 })]
-              }, item.id)), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-                className: "components-button is-primary",
+              }, item.id)), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Button, {
+                className: "is-primary",
                 onClick: addItem,
+                icon: "plus",
                 children: __('Добавить пункт меню')
               })]
             })]
@@ -211,13 +307,23 @@ registerBlockType('create-block/menu', {
             className: `mobile-menu-container ${mobileMenuOpen ? 'active' : ''}`,
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("ul", {
               className: "mobile-menu-items",
-              children: items.map(item => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("li", {
+              children: items.map(item => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("li", {
                 className: "mobile-menu-item",
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
                   href: item.url,
                   target: item.target,
                   children: item.label
-                })
+                }), item.submenu.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("ul", {
+                  className: "mobile-submenu",
+                  children: item.submenu.map(subItem => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("li", {
+                    className: "mobile-submenu-item",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
+                      href: subItem.url,
+                      target: subItem.target,
+                      children: subItem.label
+                    })
+                  }, `mobile-sub-${subItem.id}`))
+                })]
               }, `mobile-${item.id}`))
             })
           })]
@@ -252,28 +358,53 @@ registerBlockType('create-block/menu', {
           })
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("ul", {
           className: "menu-items",
-          children: attributes.items.map(item => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("li", {
-            className: "menu-item",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
+          children: attributes.items.map(item => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("li", {
+            className: "menu-item has-submenu",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("a", {
               href: item.url,
               target: item.target,
               rel: item.target === '_blank' ? 'noopener noreferrer' : '',
-              children: item.label
-            })
+              children: [item.label, item.submenu.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
+                className: "dropdown-arrow",
+                children: "\u25BC"
+              })]
+            }), item.submenu.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("ul", {
+              className: "submenu",
+              children: item.submenu.map(subItem => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("li", {
+                className: "submenu-item",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
+                  href: subItem.url,
+                  target: subItem.target,
+                  rel: subItem.target === '_blank' ? 'noopener noreferrer' : '',
+                  children: subItem.label
+                })
+              }, subItem.id))
+            })]
           }, item.id))
         })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
         className: "mobile-menu-container",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("ul", {
           className: "mobile-menu-items",
-          children: attributes.items.map(item => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("li", {
+          children: attributes.items.map(item => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("li", {
             className: "mobile-menu-item",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
               href: item.url,
               target: item.target,
               rel: item.target === '_blank' ? 'noopener noreferrer' : '',
               children: item.label
-            })
+            }), item.submenu.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("ul", {
+              className: "mobile-submenu",
+              children: item.submenu.map(subItem => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("li", {
+                className: "mobile-submenu-item",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
+                  href: subItem.url,
+                  target: subItem.target,
+                  rel: subItem.target === '_blank' ? 'noopener noreferrer' : '',
+                  children: subItem.label
+                })
+              }, `mobile-sub-${subItem.id}`))
+            })]
           }, `mobile-${item.id}`))
         })
       })]
@@ -385,35 +516,63 @@ function save({
           })
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("button", {
-        className: "mobile-menu-toggle",
+        className: `mobile-menu-toggle ${mobileMenuOpen ? 'active' : ''}`,
         "aria-label": "\u041F\u0435\u0440\u0435\u043A\u043B\u044E\u0447\u0438\u0442\u044C \u043C\u0435\u043D\u044E",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
           className: "hamburger"
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("ul", {
         className: "menu-items",
-        children: attributes.items.map(item => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("li", {
-          className: "menu-item",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("a", {
+        children: attributes.items.map(item => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("li", {
+          className: `menu-item ${item.submenu.length > 0 ? 'has-submenu' : ''}`,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("a", {
             href: item.url,
             target: item.target,
             rel: item.target === '_blank' ? 'noopener noreferrer' : '',
-            children: item.label
-          })
+            children: [item.label, item.submenu.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+              className: "dropdown-arrow",
+              children: "\u25BC"
+            })]
+          }), item.submenu.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("ul", {
+            className: "submenu",
+            children: item.submenu.map(subItem => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("li", {
+              className: "submenu-item",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("a", {
+                href: subItem.url,
+                target: subItem.target,
+                rel: subItem.target === '_blank' ? 'noopener noreferrer' : '',
+                children: subItem.label
+              })
+            }, subItem.id))
+          })]
         }, item.id))
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
       className: "mobile-menu-container",
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("ul", {
         className: "mobile-menu-items",
-        children: attributes.items.map(item => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("li", {
+        children: attributes.items.map(item => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("li", {
           className: "mobile-menu-item",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("a", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("a", {
             href: item.url,
             target: item.target,
             rel: item.target === '_blank' ? 'noopener noreferrer' : '',
-            children: item.label
-          })
+            children: [item.label, item.submenu.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+              className: "dropdown-arrow",
+              children: "\u25BC"
+            })]
+          }), item.submenu.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("ul", {
+            className: "mobile-submenu",
+            children: item.submenu.map(subItem => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("li", {
+              className: "mobile-submenu-item",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("a", {
+                href: subItem.url,
+                target: subItem.target,
+                rel: subItem.target === '_blank' ? 'noopener noreferrer' : '',
+                children: subItem.label
+              })
+            }, `mobile-sub-${subItem.id}`))
+          })]
         }, `mobile-${item.id}`))
       })
     })]

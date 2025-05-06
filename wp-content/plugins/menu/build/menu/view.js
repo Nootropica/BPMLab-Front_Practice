@@ -3,20 +3,61 @@
   !*** ./src/menu/view.js ***!
   \**************************/
 document.addEventListener('DOMContentLoaded', () => {
+  // Инициализация меню
   const menus = document.querySelectorAll('.wp-block-create-block-menu');
   menus.forEach(menu => {
     const position = menu.className.match(/menu-(top|bottom|left|right)/)?.[1] || 'top';
-    if (position === 'top') {
-      const menuHeight = menu.offsetHeight;
-      document.body.style.paddingTop = `${menuHeight + 40}px`;
-    } else if (position === 'bottom') {
-      const menuHeight = menu.offsetHeight;
-      document.body.style.paddingBottom = `${menuHeight + 40}px`;
-    } else if (position === 'left') {
-      document.body.style.paddingLeft = '250px';
-    } else if (position === 'right') {
-      document.body.style.paddingRight = '250px';
+
+    // Обработка подменю
+    const menuItems = menu.querySelectorAll('.menu-item.has-submenu');
+    menuItems.forEach(item => {
+      const submenu = item.querySelector('.submenu');
+      item.addEventListener('mouseenter', () => {
+        if (window.innerWidth > 768 && submenu) {
+          submenu.style.display = 'block';
+          setTimeout(() => {
+            submenu.style.opacity = '1';
+            submenu.style.visibility = 'visible';
+            submenu.style.transform = position === 'bottom' ? 'translateY(-10px)' : 'translateY(0)';
+          }, 10);
+        }
+      });
+      item.addEventListener('mouseleave', () => {
+        if (window.innerWidth > 768 && submenu) {
+          submenu.style.opacity = '0';
+          submenu.style.visibility = 'hidden';
+          submenu.style.transform = position === 'bottom' ? 'translateY(10px)' : 'translateY(-10px)';
+          setTimeout(() => {
+            submenu.style.display = 'none';
+          }, 300);
+        }
+      });
+    });
+
+    // Обработка мобильного меню
+    const mobileMenuToggle = menu.querySelector('.mobile-menu-toggle');
+    const mobileMenu = menu.querySelector('.mobile-menu-container');
+    if (mobileMenuToggle && mobileMenu) {
+      mobileMenuToggle.addEventListener('click', e => {
+        e.preventDefault();
+        mobileMenuToggle.classList.toggle('active');
+        mobileMenu.classList.toggle('active');
+        document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+      });
     }
+    const mobileMenuItems = menu.querySelectorAll('.mobile-menu-item');
+    mobileMenuItems.forEach(item => {
+      if (item.querySelector('.mobile-submenu')) {
+        const link = item.querySelector('a');
+        link.addEventListener('click', e => {
+          if (window.innerWidth <= 768) {
+            e.preventDefault();
+            const submenu = item.querySelector('.mobile-submenu');
+            submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+          }
+        });
+      }
+    });
   });
 
   // Совместимость с WordPress admin bar
@@ -25,11 +66,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (adminBar) {
       const adminBarHeight = adminBar.offsetHeight;
       const topMenus = document.querySelectorAll('.wp-block-create-block-menu.menu-top');
+      const bottomMenus = document.querySelectorAll('.wp-block-create-block-menu.menu-bottom');
       const leftMenus = document.querySelectorAll('.wp-block-create-block-menu.menu-left');
       const rightMenus = document.querySelectorAll('.wp-block-create-block-menu.menu-right');
       topMenus.forEach(menu => {
-        menu.style.top = `${adminBarHeight + 20}px`;
-        document.body.style.paddingTop = `${menu.offsetHeight + adminBarHeight + 40}px`;
+        menu.style.top = `${adminBarHeight}px`;
+      });
+      bottomMenus.forEach(menu => {
+        menu.style.bottom = '0';
       });
       leftMenus.forEach(menu => {
         menu.style.top = `${adminBarHeight}px`;
@@ -41,33 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
   }
-});
-document.addEventListener('DOMContentLoaded', function () {
-  const menuToggle = document.querySelector('.mobile-menu-toggle');
-  const mobileMenu = document.querySelector('.mobile-menu-container');
-  if (menuToggle && mobileMenu) {
-    menuToggle.addEventListener('click', function () {
-      this.classList.toggle('active');
-      mobileMenu.classList.toggle('active');
-
-      // Блокируем прокрутку страницы при открытом меню
-      if (this.classList.contains('active')) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = '';
-      }
-    });
-  }
-
-  // Закрываем меню при клике на ссылку
-  const menuLinks = document.querySelectorAll('.mobile-menu-item a');
-  menuLinks.forEach(link => {
-    link.addEventListener('click', function () {
-      menuToggle.classList.remove('active');
-      mobileMenu.classList.remove('active');
-      document.body.style.overflow = '';
-    });
-  });
 });
 /******/ })()
 ;

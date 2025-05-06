@@ -9,7 +9,7 @@ return array(
 		'title' => 'Меню',
 		'category' => 'design',
 		'icon' => 'menu',
-		'description' => 'Кастомное меню с логотипом и адаптивным дизайном',
+		'description' => 'Кастомное меню с логотипом, многоуровневой структурой и адаптивным дизайном',
 		'example' => array(
 			
 		),
@@ -29,7 +29,10 @@ return array(
 						'id' => 0,
 						'label' => 'Пункт меню',
 						'url' => '#',
-						'target' => '_self'
+						'target' => '_self',
+						'submenu' => array(
+							
+						)
 					)
 				)
 			),
