@@ -57,3 +57,7 @@ function create_block_menu_block_init() {
 	}
 }
 add_action( 'init', 'create_block_menu_block_init' );
+function add_open_sans_font() {
+    wp_enqueue_style( 'open-sans-font', 'https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap', array(), null );
+}
+add_action( 'wp_enqueue_scripts', 'add_open_sans_font' );

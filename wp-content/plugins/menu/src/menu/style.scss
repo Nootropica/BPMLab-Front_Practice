@@ -1,3 +1,4 @@
+
 // Основные переменные
 $primary-color: #2C36F2;
 $active-color: #FF3B30;
@@ -7,9 +8,11 @@ $light-color: #FFFFFF;
 $border-radius: 8px;
 $font-family: 'Open Sans', 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 $mobile-breakpoint: 768px;
-
+a, button, .mobile-menu-toggle, .search-icon, .user-icon, .cta-button {
+  outline: none !important;
+}
 .wp-block-create-block-menu {
-  outline: none;
+  outline: none !important;
   border: none;
   box-sizing: border-box;
   font-family: $font-family;
@@ -20,16 +23,15 @@ $mobile-breakpoint: 768px;
   position: fixed;
   z-index: 9999;
   border-radius: $border-radius;
-  overflow: visible !important; 
+  overflow: visible !important;
 
-  * {
+  *, *:before, *:after {
     box-sizing: inherit;
   }
 
   /* Общие стили для всех ссылок меню */
   .menu-items {
-    position: relative; // Для корректного позиционирования подменю
-    border: none;
+    position: relative;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -66,19 +68,13 @@ $mobile-breakpoint: 768px;
         font-weight: 500;
         font-size: 16px;
         line-height: 1.5;
-        position: relative;
-        border: none;
         transition: color 0.2s ease;
 
         &:hover {
-          outline: none;
           color: $primary-color;
-          border: none;
         }
 
         &:active {
-          outline: none;
-          border: none;
           color: $active-color;
           font-weight: 600;
         }
@@ -105,17 +101,15 @@ $mobile-breakpoint: 768px;
     transform: translateY(10px);
     transition: all 0.3s ease;
 
-    .submenu-item {
-      a {
-        padding: 10px 16px;
-        display: block;
-        color: $text-color;
-        font-size: 14px;
+    .submenu-item a {
+      padding: 10px 16px;
+      display: block;
+      color: $text-color;
+      font-size: 14px;
 
-        &:hover {
-          background: rgba($primary-color, 0.1);
-          color: $primary-color;
-        }
+      &:hover {
+        background: rgba($primary-color, 0.1);
+        color: $primary-color;
       }
     }
   }
@@ -125,6 +119,7 @@ $mobile-breakpoint: 768px;
     font-size: 0.7em;
     transition: transform 0.2s ease;
   }
+
   /* Контейнер для содержимого */
   .menu-content {
     border-radius: $border-radius;
@@ -138,7 +133,6 @@ $mobile-breakpoint: 768px;
 
   /* Логотип */
   .menu-logo {
-    outline: none;
     display: flex;
     align-items: center;
     height: 100%;
@@ -152,7 +146,7 @@ $mobile-breakpoint: 768px;
     }
   }
 
-  /* Мобильное меню - общие стили */
+  /* Мобильное меню */
   .mobile-menu-toggle {
     display: none;
     cursor: pointer;
@@ -171,7 +165,7 @@ $mobile-breakpoint: 768px;
         content: '';
         position: absolute;
         width: 24px;
-        height: 2px;
+        height: 1px;
         background: $text-color;
         transition: all 0.3s ease;
       }
@@ -201,7 +195,6 @@ $mobile-breakpoint: 768px;
   }
 
   .mobile-menu-container {
-    display: block !important; // Добавляем это
     position: fixed;
     top: 72px;
     left: 0;
@@ -216,7 +209,6 @@ $mobile-breakpoint: 768px;
     
     &.active {
       transform: translateX(0);
-      display: block !important; 
     }
     
     .mobile-menu-items {
@@ -239,7 +231,6 @@ $mobile-breakpoint: 768px;
           
           &:hover, &:active {
             background: rgba($light-color, 0.1);
-            color: $light-color;
           }
           
           &[aria-current="page"],
@@ -277,431 +268,258 @@ $mobile-breakpoint: 768px;
           background: darken($primary-color, 10%);
         }
       }
+    }
+  }
+
+  /* Общие стили для верхнего и нижнего меню */
+  &.menu-top, &.menu-bottom {
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    height: 72px;
+    padding: 0 24px;
+    
+    .menu-content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .menu-logo {
+      padding-right: 40px;
+    }
+
+    .menu-items .menu-item a {
+      color: $text-color;
+      padding: 24px 16px;
       
-      .mobile-menu-contacts {
-        line-height: 1.6;
+      &:active,
+      &[aria-current="page"],
+      &.current-menu-item,
+      &.current-page-item,
+      &.active {
+        color: $active-color;
+      }
+    }
+
+    .menu-right-section {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-left: auto;
+
+      .search-icon,
+      .user-icon {
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
         
-        p {
-          margin: 8px 0;
+        svg {
+          width: 100%;
+          height: 100%;
+          fill: $text-color;
+          transition: fill 0.2s ease;
         }
-        
-        strong {
-          color: $light-color;
-          font-weight: 600;
+
+        &:hover svg {
+          fill: $primary-color;
+        }
+      }
+
+      .cta-button {
+        background: $primary-color;
+        color: white;
+        border: none;
+        border-radius: $border-radius;
+        padding: 10px 16px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+
+        &:hover {
+          background: darken($primary-color, 10%);
         }
       }
     }
   }
 
-  /* Верхнее меню */
+  /* Специфичные стили для верхнего меню */
   &.menu-top {
     top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    height: 72px;
-    padding: 0 24px;
-    border-radius: $border-radius;
-
-    .menu-content {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 0 24px;
-      overflow: visible !important;
-    }
-
-    .menu-logo {
-      padding-right: 40px;
-      
-      img {
-        height: 32px;
-      }
-    }
-
-    .menu-items {
-      position: relative; 
-      overflow: visible !important;
-      .menu-item a {
-        &:focus {
-          outline: none;
-          box-shadow: none;
-        }
-        color: #00214D;
-        padding: 24px 16px;
-        
-        &:active::after,
-        &[aria-current="page"]::after,
-        &.current-menu-item::after,
-        &.current-page-item::after,
-        &.active::after {
-          color: $active-color;
-          outline: none;
-          left: 8px;
-          right: 8px;
-          bottom: 8px;
-          height: 2px;
-        }
-      }
-    }
-
-    .menu-right-section {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      margin-left: auto;
-
-      .search-icon,
-      .user-icon {
-        cursor: pointer;
-        width: 24px;
-        height: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        
-        svg {
-          width: 100%;
-          height: 100%;
-          fill: $text-color;
-          transition: fill 0.2s ease;
-        }
-
-        &:hover svg {
-          fill: $primary-color;
-        }
-      }
-
-      .cta-button {
-        background: $primary-color;
-        color: white;
-        border: none;
-        border-radius: $border-radius;
-        padding: 10px 16px;
-        font-weight: 600;
-        font-size: 14px;
-        cursor: pointer;
-        transition: background 0.2s ease;
-
-        &:hover {
-          background: darken($primary-color, 10%);
-        }
+    
+    .menu-items .menu-item a {
+      &:active::after,
+      &[aria-current="page"]::after,
+      &.current-menu-item::after,
+      &.current-page-item::after,
+      &.active::after {
+        content: '';
+        position: absolute;
+        background: $active-color;
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
+        height: 1px;
       }
     }
   }
 
-  /* Нижнее меню */
+  /* Специфичные стили для нижнего меню */
   &.menu-bottom {
     bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    height: 72px;
-    padding: 0 24px;
-    border-radius: $border-radius;
+    
     .menu-item {
-      position: relative;
       .submenu {
         top: auto;
-        bottom: 100%; // Показываем над пунктом меню
-        transform: translateY(-4px); // Начальное положение для анимации
+        bottom: 100%;
+        transform: translateY(-4px);
       }
-      &:hover {
-        .submenu {
-          transform: translateY(0); // Финальное положение
-        }
-      }
-    }  
-    .menu-content {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 0 24px;
-      overflow: visible !important;
-    }
-
-    .menu-logo {
-      padding-right: 40px;
       
-      img {
-        height: 32px;
+      &:hover .submenu {
+        transform: translateY(0);
       }
     }
-
-    .menu-items {
-      .menu-item a {
-        color: #00214D;
-        &:focus {
-          outline: none;
-          box-shadow: none;
-        }
-        padding: 24px 16px;
-        
-        &:active::after,
-        &[aria-current="page"]::after,
-        &.current-menu-item::after,
-        &.current-page-item::after,
-        &.active::after {
-          color: $active-color;
-          outline: none;
-          left: 8px;
-          right: 8px;
-          bottom: auto;
-          top: 8px;
-          height: 2px;
-        }
-      }
-    }
-
-    .menu-right-section {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      margin-left: auto;
-
-      .search-icon,
-      .user-icon {
-        cursor: pointer;
-        width: 24px;
-        height: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        
-        svg {
-          width: 100%;
-          height: 100%;
-          fill: $text-color;
-          transition: fill 0.2s ease;
-        }
-
-        &:hover svg {
-          fill: $primary-color;
-        }
-      }
-
-      .cta-button {
-        background: $primary-color;
-        color: white;
-        border: none;
-        border-radius: $border-radius;
-        padding: 10px 16px;
-        font-weight: 600;
-        font-size: 14px;
-        cursor: pointer;
-        transition: background 0.2s ease;
-
-        &:hover {
-          background: darken($primary-color, 10%);
-        }
+    
+    .menu-items .menu-item a {
+      &:active::after,
+      &[aria-current="page"]::after,
+      &.current-menu-item::after,
+      &.current-page-item::after,
+      &.active::after {
+        content: '';
+        position: absolute;
+        background: $active-color;
+        left: 8px;
+        right: 8px;
+        top: 8px;
+        height: 1px;
       }
     }
   }
 
-  /* Левое меню */
+  /* Общие стили для боковых меню */
+  &.menu-left, &.menu-right {
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    height: 100vh;
+    overflow-y: auto;
+    
+    .menu-content {
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+      padding: 0;
+    }
+
+    .menu-logo {
+      height: auto;
+      padding: 24px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #eee;
+      
+      img {
+        height: 40px;
+        max-height: none;
+      }
+    }
+
+    .menu-items {
+      flex-direction: column;
+      gap: 0;
+      padding: 0;
+
+      .menu-item {
+        width: 100%;
+        
+        a {
+          padding: 16px 24px;
+          
+          &:active,
+          &[aria-current="page"],
+          &.current-menu-item,
+          &.current-page-item,
+          &.active {
+            &::after {
+              content: '';
+              position: absolute;
+              background: $active-color;
+              left: 24px;
+              right: 24px;
+              bottom: 0;
+              height: 1px;
+            }
+          }
+        }
+      }
+    }
+
+    .menu-footer {
+      margin-top: auto;
+      padding: 24px;
+      border-top: 1px solid #eee;
+    }
+  }
+
+  /* левое меню */
   &.menu-left {
-    top: 0;
     left: 0;
-    bottom: 0;
-    width: 280px;
-    height: 100vh;
-    margin: 0;
     border-right: 1px solid #eee;
-    overflow-y: auto;
-    border-radius: $border-radius;
-
-    .menu-content {
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: stretch;
-      padding: 0;
-      overflow: visible !important;
-    }
-
-    .menu-logo {
-      height: auto;
-      padding: 24px;
-      margin-bottom: 16px;
-      border-bottom: 1px solid #eee;
-      
-      img {
-        height: 40px;
-        max-height: none;
-      }
-    }
-
-    .menu-items {
-      flex-direction: column;
-      gap: 0;
-      padding: 0;
-
-      .menu-item {
-        width: 100%;
-        
-        a {
-          padding: 16px 24px;
-          border-radius: 0;
-          
-          &:active,
-          &[aria-current="page"],
-          &.current-menu-item,
-          &.current-page-item,
-          &.active {
-            &::after {
-              color: $active-color;
-              outline: none;
-              left: 24px;
-              right: 24px;
-              bottom: 0;
-              top: auto;
-              height: 2px;
-            }
-          }
-        }
-      }
-    }
-
-    .menu-footer {
-      margin-top: auto;
-      padding: 24px;
-      border-top: 1px solid #eee;
-
-      .user-profile {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        
-        .user-avatar {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          background: #f5f5f5;
-          overflow: hidden;
-          
-          img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-          }
-        }
-
-        .user-info {
-          .user-name {
-            font-weight: 600;
-            font-size: 14px;
-            color: $text-color;
-          }
-
-          .user-email {
-            font-size: 12px;
-            color: lighten($text-color, 30%);
-          }
-        }
-      }
-    }
   }
 
-  /* Правое меню */
+  /*правое меню */
   &.menu-right {
-    top: 0;
     right: 0;
-    bottom: 0;
-    width: 280px;
-    height: 100vh;
-    margin: 0;
     border-left: 1px solid #eee;
-    overflow-y: auto;
-    border-radius: $border-radius;
+  }
 
-    .menu-content {
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: stretch;
-      padding: 0;
-      overflow: visible !important;
-    }
-
-    .menu-logo {
-      height: auto;
-      padding: 24px;
-      margin-bottom: 16px;
-      border-bottom: 1px solid #eee;
+  /* Адаптация для мобильных устройств */
+  @media (max-width: $mobile-breakpoint) {
+    &.menu-top, &.menu-bottom {
+      height: 60px;
+      padding: 0 16px;
       
-      img {
-        height: 40px;
-        max-height: none;
+      .menu-logo img {
+        height: 28px;
       }
-    }
-
-    .menu-items {
-      flex-direction: column;
-      gap: 0;
-      padding: 0;
-
-      .menu-item {
-        width: 100%;
+      
+      .menu-items, 
+      .menu-right-section .search-icon, 
+      .menu-right-section .user-icon, 
+      .menu-right-section .cta-button {
+        display: none;
+      }
+      
+      .mobile-menu-toggle {
+        display: block;
+        margin-left: auto;
+        margin-right: 16px;
+        padding: 12px;
+        background: none;
+        border: none;
         
-        a {
-          padding: 16px 24px;
-          border-radius: 0;
+        .hamburger {
+          width: 20px;
           
-          &:active,
-          &[aria-current="page"],
-          &.current-menu-item,
-          &.current-page-item,
-          &.active {
-            &::after {
-              color: $active-color;
-              outline: none;
-              left: 24px;
-              right: 24px;
-              bottom: 0;
-              top: auto;
-              height: 2px;
-            }
+          &::before, &::after {
+            width: 20px;
           }
         }
       }
     }
-
-    .menu-footer {
-      margin-top: auto;
-      padding: 24px;
-      border-top: 1px solid #eee;
-
-      .user-profile {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        
-        .user-avatar {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          background: #f5f5f5;
-          overflow: hidden;
-          
-          img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-          }
-        }
-
-        .user-info {
-          .user-name {
-            font-weight: 600;
-            font-size: 14px;
-            color: $text-color;
-          }
-
-          .user-email {
-            font-size: 12px;
-            color: lighten($text-color, 30%);
-          }
-        }
+    
+    .mobile-submenu {
+      display: none;
+      padding-left: 20px;
+      list-style: none;
+      margin: 0;
+  
+      .mobile-submenu-item a {
+        font-size: 16px;
+        color: rgba($light-color, 0.8);
       }
     }
   }
@@ -723,190 +541,6 @@ $mobile-breakpoint: 768px;
     @media (max-width: 782px) {
       top: 46px;
       height: calc(100vh - 46px);
-    }
-  }
-
-  /* Адаптация для мобильных устройств */
-  @media (max-width: $mobile-breakpoint) {
-    // Для всех типов меню
-    display: block !important; // Добавляем это
-    &.menu-top, &.menu-bottom {
-      height: 60px;
-      padding: 0 16px;
-      .menu-item {
-        position: relative; 
-      .menu-content {
-        padding: 0;
-      }
-    }
-      .menu-logo {
-        padding-right: 0;
-        
-        img {
-          height: 28px;
-        }
-      }
-      
-      .menu-items {
-        display: none;
-      }
-      
-      .menu-right-section {
-        .search-icon, .user-icon, .cta-button {
-          display: none;
-        }
-      }
-      
-	  .mobile-menu-toggle {
-		outline: none !important;
-		box-shadow: none !important;
-		display: block;
-		margin-left: auto; 
-		margin-right: 16px; 
-		padding: 12px;
-		background: none;
-		border: none;
-		&:focus {
-			outline: none !important;
-			box-shadow: none !important;
-		  }
-		&:active {
-			outline: none !important;
-			box-shadow: none !important;
-		}  
-		.hamburger {
-			outline: none;
-		  width: 20px; 
-		  height: 2px;
-		  background: $text-color;
-		  position: relative;
-		  
-		  &::before, &::after {
-			outline: none;
-			width: 20px; 
-			height: 2px;
-		  }
-		  
-		  &::before {
-			outline: none;
-			top: -6px;
-		  }
-		  
-		  &::after {
-			outline: none;
-			top: 6px;
-		  }
-		}
-	  }
-	  .menu-item {
-    position: relative;
-
-    &.has-submenu {
-      &:hover {
-        .submenu {
-          display: block;
-        }
-      }
-    }
-
-    .dropdown-arrow {
-      margin-left: 5px;
-      font-size: 0.7em;
-    }
-  }
-
-  .submenu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 1000; 
-    min-width: 200px;
-    background: $light-color;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border-radius: $border-radius;
-    z-index: 100;
-    padding: 8px 0;
-    list-style: none;
-    margin: 0;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(10px);
-    transition: all 0.3s ease;
-
-  .wp-block-create-block-menu & {
-    overflow: visible;
-  }
-
-  .submenu-item {
-    a {
-      padding: 10px 16px;
-      display: block;
-      color: $text-color;
-      font-size: 14px;
-
-      &:hover {
-        background: rgba($primary-color, 0.1);
-        color: $primary-color;
-      }
-    }
-  }
-}
-	  // Для боковых меню
-    &.menu-left, &.menu-right {
-      .menu-item {
-        width: 100%;
-      }
-  
-      .submenu {
-        position: static;
-        box-shadow: none;
-        padding-left: 20px;
-        display: none;
-        background: transparent;
-  
-        .submenu-item a {
-          padding-left: 30px;
-        }
-      }
-
-  .wp-block-create-block-menu.menu-top,
-  .wp-block-create-block-menu.menu-bottom {
-    overflow: visible;
-    
-    .menu-content {
-      overflow: visible;
-    }
-    
-    .menu-items {
-      overflow: visible;
-    }
-  }
-      .menu-item.has-submenu:hover .submenu {
-        display: block;
-      }
-    }
-	}
-    
-    // Показываем мобильное меню
-    .mobile-submenu {
-      display: none;
-      padding-left: 20px;
-      list-style: none;
-      margin: 0;
-  
-      .mobile-submenu-item a {
-        font-size: 16px;
-        color: rgba($light-color, 0.8);
-      }
-    }
-  
-    @media (max-width: $mobile-breakpoint) {
-      .menu-item.has-submenu {
-        .submenu {
-          display: none !important;
-        }
-      }
     }
   }
 }
