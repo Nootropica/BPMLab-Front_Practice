@@ -1,0 +1,60 @@
+.cfe-groupsettingsheader-contaner {
+    display: flex;
+    padding: 0 12px;
+    background-color: #F5F7FA;
+    height: 42px;
+    border-bottom: 2px #E2E4E7 solid;
+    position: relative;
+}
+
+.cfe-groupsettingsheader-button {
+    font-size: 18px;
+    color: #2C3338;
+    height: 42px;
+    padding: 0 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.cfe-groupsettingsheader-button.active {
+    color: #3858E9; 
+}
+
+.cfe-groupsettingsheader-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #3858E9;
+}
+
+@media (max-width: 768px) {
+    .cfe-groupsettingsheader-contaner {
+        padding: 0 12px;
+        height: 38px;
+    }
+    
+    .cfe-groupsettingsheader-button {
+        font-size: 16px;
+        height: 38px;
+        padding: 0 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .cfe-groupsettingsheader-contaner {
+        padding: 0 12px;
+        height: 34px;
+    }
+    
+    .cfe-groupsettingsheader-button {
+        font-size: 14px;
+        height: 34px;
+        padding: 0 12px;
+    }
+}

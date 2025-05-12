@@ -1,0 +1,87 @@
+.cfe-toggle-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-left: 24px;
+    padding-bottom: 12px;
+  }
+  
+  .cfe-toggle-label {
+    color: #2C3338;
+    font-size: 18px;
+  }
+  
+  .cfe-toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+  }
+  
+  .cfe-toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .cfe-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    background-color: #D9D9D9;
+    border-radius: 24px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: 0.2s;
+  }
+  
+  .cfe-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    top: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.2s;
+  }
+  
+  .cfe-toggle-switch input:checked + .cfe-toggle-slider {
+    background-color: #3858E9;
+  }
+  
+  .cfe-toggle-switch input:checked + .cfe-toggle-slider:before {
+    transform: translateX(20px);
+  }
+  
+  /* Адаптивность */
+  @media (max-width: 768px) {
+    .cfe-toggle-label {
+      font-size: 16px;
+    }
+  
+    .cfe-toggle-switch {
+      width: 38px;
+      height: 20px;
+    }
+  
+    .cfe-toggle-slider:before {
+      width: 14px;
+      height: 14px;
+      top: 3px;
+      left: 3px;
+    }
+  
+    .cfe-toggle-switch input:checked + .cfe-toggle-slider:before {
+      transform: translateX(18px);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .cfe-toggle-label {
+      font-size: 14px;
+    }
+  }
+  

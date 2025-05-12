@@ -17,7 +17,11 @@ function cfe_enqueue_admin_assets($hook) {
 
     wp_localize_script('cfe-admin-react', 'cfeSettings', [
         'nonce' => wp_create_nonce('wp_rest'),
-        'rest_url' => esc_url_raw(rest_url('cfe/v1/settings')),
+        'settings_url' => esc_url_raw(rest_url('cfe/v1/settings')),
+        'pages_url'    => esc_url_raw(rest_url('cfe/v1/pages')),
+        'posts_url'   => esc_url_raw(rest_url('cfe/v1/posts')),
+        // 'blocks_url'   => esc_url_raw(rest_url('cfe/v1/blocks')),
+        
     ]);
 }
 add_action('admin_enqueue_scripts', 'cfe_enqueue_admin_assets');

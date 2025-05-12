@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './Header.css';
 
-const Header = ({ pages }) => {
+const Header = ({ pages, handleAddPage }) => {
   //контроль локации пользователя
   const location = useLocation();
   const navigate = useNavigate();
@@ -15,6 +15,15 @@ const Header = ({ pages }) => {
 
   const [activeIndex, setActiveIndex] = useState(-1);
   const [delayedActiveIndex, setDelayedActiveIndex] = useState(-1);
+  useEffect(() => {
+    if (currentPath === '/cfe-settings-group') {
+      const exists = pages.some(p => p.url === '/cfe-settings-group');
+      if (!exists) {
+        handleAddPage();
+      }
+    }
+  }, [currentPath, pages]);
+  console.log(pages);
 
   useEffect(() => {
     const index = pages.findIndex(page => page.url === currentPath);

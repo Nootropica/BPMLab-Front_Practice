@@ -11,7 +11,7 @@ const TopMain = ({ onAddPage, checkboxes, setCheckboxes }) => {
 
     /* Часть для обработки страницы "Группы полей" */
     useEffect(() => {
-        if (currentPath === '/wp-admin/admin.php?page=cfe-main') {
+        if (currentPath === '/') {
             fetch(cfeSettings.rest_url, {
                 method: 'GET',
                 headers: {
@@ -57,7 +57,7 @@ const TopMain = ({ onAddPage, checkboxes, setCheckboxes }) => {
 
     const handleAddGroupClick = () => {
         if (onAddPage) onAddPage();
-        navigate(`/wp-admin/admin.php?page=cfe-settings-group`);
+        navigate('/cfe-settings-group', { state: { blockId: 0 } });
     };
 
     const handleSettingsClick = () => {
@@ -97,9 +97,13 @@ const TopMain = ({ onAddPage, checkboxes, setCheckboxes }) => {
         console.log('Request was sent successfully: ', data);
     };
 
+    const handleSaveChangeClick = () => {
+        navigate(`/`);
+    };
+
     let content;
     switch (currentPath) {
-        case '/wp-admin/admin.php?page=cfe-main':
+        case '/':
             content = (
                 <>
                     <div className="cfe_topmain">
@@ -173,7 +177,7 @@ const TopMain = ({ onAddPage, checkboxes, setCheckboxes }) => {
             );
             break;
 
-        case '/wp-admin/admin.php?page=cfe-settings-group':
+        case '/cfe-settings-group':
             content =(
                 <>
                     <div className="cfe_topmain cfe_topmain_settings_group" >
@@ -186,7 +190,7 @@ const TopMain = ({ onAddPage, checkboxes, setCheckboxes }) => {
                         />
                         <button
                             className="cfe_topmain_main_button cfe_topmain_button_save"
-                            // onClick={handleAddGroupClick}
+                            onClick={handleSaveChangeClick}
                         >
                             Сохранить изменения
                         </button>

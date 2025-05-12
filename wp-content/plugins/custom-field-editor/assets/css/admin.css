@@ -9,6 +9,11 @@
     margin: 0;
 }
 
+#cfe-root{
+    background-color: #E2E4E7;
+    padding-bottom: 20px;
+}
+
 #wpcontent{
     padding-left: 0;
     font-family: 'Roboto', sans-serif;

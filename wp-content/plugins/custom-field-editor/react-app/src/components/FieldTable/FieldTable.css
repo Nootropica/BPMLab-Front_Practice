@@ -1,0 +1,132 @@
+.cfe-field-table {
+    border: 2px solid #D9D9D9;
+    color: #2C3338;
+    margin: 12px;
+    border-radius: 12px;
+    font-size: 18px;
+}
+
+.cfe-table-header {
+  height: 40px;
+  overflow: hidden;
+  background: #D9D9D9;
+  border-radius: 10px 10px 0 0;
+}
+
+.cfe-table-header table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.cfe-table-body {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.cfe-table-body table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+th, td {
+  padding: 8px;
+  vertical-align: top;
+  text-align: left;
+  white-space: normal; 
+  word-wrap: break-word; 
+  word-break: break-all; 
+}
+th{
+  font-weight: normal;
+}
+td{
+  border-bottom: 2px solid #E2E4E7;
+}
+
+th:nth-child(1), td:nth-child(1) {
+  width: 52px;
+  max-width: 52px;
+  padding: 8px 12px;
+}
+th:nth-child(2), td:nth-child(2) {
+  width: 24px;
+  max-width: 24px;
+}
+
+.svg-button{
+    padding: 0;
+    width: 24px;
+    max-width: 24px;
+    border: none;
+    background-color: transparent;
+}
+
+th:nth-child(3), td:nth-child(3) {
+  max-width: 320px;
+}
+
+th:nth-child(4), td:nth-child(4) {
+  max-width: 260px;
+}
+
+th:nth-child(5), td:nth-child(5) {
+  max-width: 492px;
+}
+
+th:nth-child(6), td:nth-child(6) {
+  max-width: 256px;
+}
+.cfe-field-table .cfe-table-body table td .button-group {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.cfe-field-table .cfe-table-body table td .button-group button {
+  background: none;
+  color: #3858E9;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.cfe-field-table .cfe-table-body table td .button-group button:hover {
+  color: #3858E9;
+}
+
+.cfe-field-table .cfe-table-body table td .button-group .button-remove{
+    color: #DC3232;
+}
+
+.arrow-icon {
+    transition: transform 0.3s ease;
+  }
+  
+  .arrow-icon.rotated {
+    transform: rotate(180deg);
+}
+
+.expanding-row .expanded-content {
+    padding: 0 !important;
+    border-left: 2px #3858E9 solid;
+}
+.expanding-row .expanding-block{
+    padding: 0;
+}
+
+@keyframes expand {
+  from {
+    opacity: 0;
+    transform: scaleY(0);
+    height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+    height: auto;
+  }
+}
