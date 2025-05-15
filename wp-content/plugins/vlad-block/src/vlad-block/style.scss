@@ -11,7 +11,7 @@
   .wp-block-group.product-card {
 	width: calc((100% - 40px) / 3);
 	min-width: 280px;
-	max-width: 300px;
+	max-width: 320px;
 	margin: 0 !important;
 	padding: 15px;
 	border: 1px solid #dcdcde;
@@ -44,7 +44,6 @@
 	> * {
 	  order: initial !important;
 	  margin: 0 !important;
-	  padding: 0 !important;
 	  width: 100% !important;
 	}
   
@@ -61,20 +60,25 @@
 	.product-title {
 	  order: 2 !important;
 	  font-size: 20px;
-	  font-weight: 600;
+	  font-weight: 900 !important;
 	  margin-bottom: 10px !important;
 	}
   
 	.product-description {
 	  order: 3 !important;
 	  font-size: 15px;
-	  color: #444;
+	  color: black;
 	  margin-bottom: 10px !important;
+	  background-color: lightgray;
+	  border-radius: 12px;
+	  padding: 2px;
+	  font-weight: 700;
+	  font-style: italic;
 	}
   
 	.product-price {
 	  order: 4 !important;
-	  color: #d30b0b;
+	  color: black;
 	  font-weight: bold;
 	  font-size: 20px;
 	  margin: 12px 0 !important;
@@ -96,85 +100,6 @@
   
 		&:hover {
 		  background-color: #006ba1;
-		}
-	  }
-	}
-  
-	.product-modal-content {
-	  display: none !important;
-	  position: fixed;
-	  top: 50%;
-	  left: 50%;
-	  transform: translate(-50%, -50%) !important;
-	  width: 80%;
-	  max-width: 600px;
-	  max-height: 80vh;
-	  overflow-y: auto;
-	  padding: 30px !important;
-	  background: white;
-	  border: 1px solid #ddd;
-	  border-radius: 8px;
-	  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-	  z-index: 9999;
-	  margin-top: 0 !important;
-	  transition: none !important;
-	  
-	  &:hover {
-		transform: translate(-50%, -50%) !important;
-	  }
-  
-	  &.visible {
-		display: block !important;
-	  }
-  
-	  .product-modal-title {
-		font-size: 22px !important;
-		margin-bottom: 20px !important;
-		color: #1e1e1e !important;
-	  }
-  
-	  .product-modal-subtitle {
-		font-size: 18px !important;
-		margin: 20px 0 10px 0 !important;
-		color: #2a2a2a !important;
-		font-weight: 600 !important;
-	  }
-  
-	  .product-modal-specs {
-		font-size: 15px !important;
-		color: #50575e !important;
-		line-height: 1.5 !important;
-		margin-bottom: 15px !important;
-	  }
-  
-	  .product-modal-description {
-		font-size: 16px !important;
-		line-height: 1.6 !important;
-		margin-bottom: 15px !important;
-		color: #50575e !important;
-	  }
-  
-	  .product-modal-additional {
-		font-size: 14px !important;
-		color: #666 !important;
-		margin-bottom: 15px !important;
-	  }
-  
-	  .modal-close-button {
-		margin-top: 30px !important;
-		text-align: center;
-		
-		.wp-block-button__link {
-		  background-color: #d30b0b !important;
-		  color: white !important;
-		  padding: 10px 25px;
-		  border-radius: 6px;
-		  font-weight: 500;
-		  transition: background-color 0.2s;
-		  
-		  &:hover {
-			background-color: #b00909 !important;
-		  }
 		}
 	  }
 	}
@@ -211,6 +136,81 @@
 	  .product-modal-content {
 		width: 95%;
 		padding: 20px;
+	  }
+	}
+  }
+  
+  .product-modal-content {
+	display: none;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 80%;
+	max-width: 600px;
+	max-height: 80vh;
+	overflow-y: auto;
+	padding: 30px;
+	background: white;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+	z-index: 9999;
+	margin-top: 0;
+	transition: none;
+  
+	&.visible {
+	  display: block !important;
+	}
+  
+	.product-modal-title {
+	  font-size: 22px !important;
+	  margin-bottom: 20px !important;
+	  color: #1e1e1e !important;
+	}
+  
+	.product-modal-subtitle {
+	  font-size: 18px !important;
+	  margin: 20px 0 10px 0 !important;
+	  color: #2a2a2a !important;
+	  font-weight: 600 !important;
+	}
+  
+	.product-modal-specs {
+	  font-size: 15px !important;
+	  color: #50575e !important;
+	  line-height: 1.5 !important;
+	  margin-bottom: 15px !important;
+	}
+  
+	.product-modal-description {
+	  font-size: 16px !important;
+	  line-height: 1.6 !important;
+	  margin-bottom: 15px !important;
+	  color: #50575e !important;
+	}
+  
+	.product-modal-additional {
+	  font-size: 14px !important;
+	  color: #666 !important;
+	  margin-bottom: 15px !important;
+	}
+  
+	.modal-close-button {
+	  margin-top: 30px !important;
+	  text-align: center;
+	  
+	  .wp-block-button__link {
+		background-color: #d30b0b !important;
+		color: white !important;
+		padding: 10px 25px;
+		border-radius: 6px;
+		font-weight: 500;
+		transition: background-color 0.2s;
+		
+		&:hover {
+		  background-color: #b00909 !important;
+		}
 	  }
 	}
   }
