@@ -1,0 +1,179 @@
+/* Основной блок */
+.ruslan-editable-block {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 0;
+    background-color: #fefefe;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Ширина блока */
+/*.ruslan-editable-block[data-width="small"] { max-width: 400px; }
+.ruslan-editable-block[data-width="medium"] { max-width: 747px; }
+.ruslan-editable-block[data-width="large"] { max-width: 1000px; }*/
+
+/* Заголовок */
+.ruslan-editable-block h2 {
+    font-family: var(--ruslan-font-family, 'Open Sans');
+    font-size: var(--ruslan-font-size, 32px);
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+/* Список */
+.ruslan-editable-block ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ruslan-editable-block li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0;
+    border: 1px solid #00214D;
+    border-width: 0 1px 1px 1px;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    color: var(--ruslan-text-color, #000);
+}
+
+/* Иконка */
+.ruslan-editable-block i {
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 36px;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    color: var(--ruslan-icon-color, #000);
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+/* Текст */
+.ruslan-editable-block span {
+    font-family: var(--ruslan-font-family, 'Open Sans');
+    font-size: var(--ruslan-font-size, 32px);
+    line-height: 1.4;
+    word-break: break-word;
+    white-space: normal;
+    flex-grow: 1;
+    max-width: calc(100% - 120px);
+    color: var(--ruslan-text-color, #000);
+}
+
+/* Кнопки */
+button {
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background-color: #f0f0f0;
+}
+
+/* --- Icon Picker --- */
+.icon-picker-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 400px;
+    padding: 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fcfcfc;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.icon-picker-wrapper label {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.icon-picker-wrapper select,
+.icon-picker-wrapper input[type="color"] {
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.icon-picker-wrapper .button-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.icon-picker-wrapper .icon-preview {
+    font-size: 20px;
+    margin-left: 8px;
+}
+/* --- Адаптивность для мобильных устройств --- */
+@media (max-width: 600px) {
+    .ruslan-editable-block {
+        padding: 12px;
+    }
+
+    .ruslan-editable-block h2 {
+        font-size: 20px !important;
+    }
+
+    .ruslan-editable-block ul {
+        gap: 12px;
+    }
+
+    .ruslan-editable-block li {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 8px;
+        gap: 8px;
+    }
+
+    .ruslan-editable-block i {
+        font-size: 24px;
+        width: auto;
+        height: auto;
+    }
+
+    .ruslan-editable-block span {
+        font-size: 18px !important;
+        max-width: 100%;
+    }
+
+    .icon-picker-wrapper {
+        padding: 12px;
+    }
+
+    .icon-picker-wrapper .button-row {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    button {
+        width: 100%;
+        font-size: 16px;
+    }
+}
