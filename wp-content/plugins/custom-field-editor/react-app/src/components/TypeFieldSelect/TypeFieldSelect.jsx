@@ -1,14 +1,39 @@
+/**
+ * ============================================================================
+ *  TypeFieldSelect.jsx
+ * ────────────────────────────────────────────────────────────────────────────
+ *  Дроп-даун «Тип поля» с кастомным оформлением.
+ *
+ *  Как работает:
+ *    •  Отображает текущий `activeValue` (иконка + подпись).
+ *    •  По клику раскрывает список допустимых `fields`.
+ *    •  При выборе → вызов колбэка `onChange(value)` и закрытие списка.
+ *    •  Клик вне компонента закрывает выпадашку (useEffect + mousedown).
+ *
+ *  Пропы:
+ *    activeValue : string   – выбранный тип ('text' / 'number' / …)
+ *    onChange    : function – (value) => void
+ *
+ *  NB: пока в массиве `fields` оставлен только 'text'. Раскомментируйте
+ *      остальные типы, когда появится логика работы с ними.
+ * ============================================================================
+ */
+
 import React, { useState, useRef, useEffect } from 'react';
 import IconTextType from './IconTextType';
 import './TypeFieldSelect.css';
 
-const fields = ['text'];
-// const fields = ['text', 'number', 'image', 'file'];
+/*  Справочник возможных типов поля  */
+const fields = ['text']; // ['text', 'number', 'image', 'file'] – будущие варианты
 
 const TypeFieldSelect = ({ activeValue, onChange }) => {
+  /* ───────── локальное состояние ───────── */
   const [open, setOpen] = useState(false);
   const selectRef = useRef(null);
 
+  /* =========================================================================
+   * 1.  КЛИК ВНЕ  →  ЗАКРЫВАЕМ ДРОП-ДАУН
+   * ====================================================================== */
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (selectRef.current && !selectRef.current.contains(event.target)) {
@@ -19,14 +44,20 @@ const TypeFieldSelect = ({ activeValue, onChange }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  /* =========================================================================
+   * 2.  R E N D E R
+   * ====================================================================== */
   return (
     <>
       <p className="cfe-typefieldselect-title">Тип поля</p>
       <div className="custom-select-wrapper" ref={selectRef}>
+
+        {/* ───────── текущий выбранный элемент ───────── */}
         <div className="custom-select-selected" onClick={() => setOpen(!open)}>
           <div className="icon-wrapper">
             <IconTextType value={activeValue} iconSize={26}/>
           </div>
+          {/* стрелочка */}
           <svg
             className={`custom-select-arrow ${open ? 'rotated' : ''}`}
             width="24"
@@ -42,6 +73,7 @@ const TypeFieldSelect = ({ activeValue, onChange }) => {
           </svg>
         </div>
   
+        {/* ───────── выпадающий список ───────── */}
         {open && (
           <div className="custom-select-dropdown">
             {fields.map((value) => (

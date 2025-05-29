@@ -1,3 +1,21 @@
+/**
+ * ============================================================================
+ *  SettingsGroup.jsx
+ * ────────────────────────────────────────────────────────────────────────────
+ *  Страница «Настройки группы полей».
+ *
+ *  Логика:
+ *    1.  По клику в таблице групп мы попадаем сюда и получаем `blockId`
+ *        через react-router (location.state).
+ *    2.  Делаем GET-запрос → получаем содержимое конкретной группы.
+ *    3.  Параллельно подтягиваем справочники (pages / posts) для выпадающих
+ *        списков «условий отображения».
+ *    4.  UI разбит на две секции – «Settings» и «Fields». Переключатель
+ *        находится в <GroupSettingsHeader>.
+ *    5.  Все изменения пока только в локальном state, сохранения нет.
+ * ============================================================================
+ */
+
 import { useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import TopMain from '../../components/TopMain/TopMain';
@@ -9,6 +27,7 @@ import FieldTable from '../../components/FieldTable/FieldTable';
 import './SettingsGroup.css';
 
 const SettingsGroup = () => {
+  /* ───────── callbacks-заглушки (пока без API) ───────── */
   const handleAddFuildClick = () => {
     console.log("группа создана")
   };
@@ -16,15 +35,44 @@ const SettingsGroup = () => {
   const handleRemoveGroupClick = () => {
     console.log("группа удалена")
   };
+  /* ───────── маршрутизация ───────── */
   const location = useLocation();
   const { blockId } = location.state || {};
 
-  const [blockData, setBlockData] = useState(null);
+  /* ───────── состояние группы ───────── */
+  const [fieldGroup, setFieldGroup] = useState(null);   // данные конкретной группы
+  const [error, setError]           = useState(null)
 
+  /* =========================================================================
+  *  1.  ЗАГРУЗКА САМОЙ ГРУППЫ
+  * ====================================================================== */
+  useEffect(() => {
+    if (blockId) {
+      fetch(`${cfeSettings.field_group_url}/${blockId}`, {
+        method: 'GET',
+        headers: {
+          'X-WP-Nonce': cfeSettings.nonce,
+        },
+      })
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`Ошибка: ${res.status}`);
+          }
+          return res.json();
+        })
+        .then(data => setFieldGroup(data))
+        .catch(err => setError(err.message));
+    }
+  }, [blockId]);
+
+  /* ───────── состояние справочников ───────── */
   const [pages, setPages] = useState([]);
   // const [blocks, setBlocks] = useState([]);
   const [posts, setPosts] = useState([]);
 
+  /* =========================================================================
+   *  2.  ЗАГРУЗКА СПРАВОЧНИКОВ (pages, posts, …)
+   * ====================================================================== */
   useEffect(() => {
     fetch(cfeSettings.pages_url, {
       method: 'GET',
@@ -58,25 +106,27 @@ const SettingsGroup = () => {
   // 
   }, []);
 
+  /* ───────── локальная map-коллекция ───────── */
   const [dataMap] = useState(() => new Map());
   
   const addDataMap = (key, value) => {
     dataMap.set(key, value);
   };
 
+  /* ───────── таблица «поля» (заглушка) ───────── */
   const fields = [
     { number: 1, id:52, label: 'Этикетка A', name: 'Название A', key: 'key-a', type: "text" },
     { number: 2, id:53, label: 'Этикетка B', name: 'Название B', key: 'key-b', type: "image" },
     { number: 3, id:55, label: 'Этикетка C', name: 'Название C', key: 'key-c', type: "number" },
   ];
 
+  /* ───────── переключатель секций ───────── */
   const [currentSection, setCurrentSection] = useState("Fields");
 
+  /* ───────── «Показывать группу, если …» ───────── */
   const [conditions, setConditions] = useState([
     { id: 1, field: 'page', operator: 'equals', value: 'post' }
   ]);
-
-  console.log(conditions);
 
   const fieldOptions = [
     { value: 'page', id: 1, label: 'Страница' },
@@ -95,6 +145,9 @@ const SettingsGroup = () => {
     post: posts,
   };
 
+  /* =========================================================================
+  *  3.  WORKFLOW «Условия отображения»
+  * ====================================================================== */
   const addCondition = () => {
     const defaultField = 'page';
     const defaultValue = valueOptions[defaultField]?.[0]?.id || '';
@@ -130,20 +183,16 @@ const SettingsGroup = () => {
       return condition;
     }));
   };
-  const [selectedLocation, setSelectedLocation] = useState('default');
-  const [selectedLocationLabel, setSelectedLocationLabel] = useState('top');
-  const [selectedLocationManual, setSelectedLocationManual] = useState('label');
-  const [textNumber, setTextNumber] = useState('');
-
-  const [isActive, setIsActive] = useState(true);
-  const [textDescription, setTextDescription] = useState('');
-  const [textIcon, setTextIcon] = useState('');
 
   const test = true;
+  /* =========================================================================
+  *  4.  R E N D E R
+  * ====================================================================== */
   return (
     <>
       < TopMain/>
       {test ? (
+        /* ====== контент, когда группа выбрана ====== */
         <div className="cfe-settingsgroup-content-true">
           <GroupSettingsHeader 
             addDataMap={addDataMap} 
@@ -152,12 +201,14 @@ const SettingsGroup = () => {
           />
           {currentSection === "Settings" ? (
             <>
+              {/* ─────────── 4.1  Раздел «Settings» ─────────── */}
               <div className="cfe-settingsgroup-settings-contaner">
                 <p className="cfe-settingsgroup-settings-title">
                   Правила расположения
                 </p>
               </div>
               <p className="cfe-settingsgroup-settings-show-text">Показывать группу, если:</p>
+              {/* ───────── УСЛОВИЯ ОТОБРАЖЕНИЯ ───────── */}
               <div className="cfe-settingsgroup-conditions-container">
                 {conditions.map((condition) => (
                   <div key={condition.id} className="cfe-settingsgroup-condition-row">
@@ -216,6 +267,7 @@ const SettingsGroup = () => {
                   </svg>
                 </button>
                 </div>
+                {/* ───────── ПОДРАЗДЕЛ «Отображение» ───────── */}
                 <div className='cfe-settingsgroup-contaner'>
                 <div className="cfe-settingsgroup-settings-contaner">
                   <p className="cfe-settingsgroup-settings-title">
@@ -228,8 +280,14 @@ const SettingsGroup = () => {
                     { value: 'default', label: 'Обычное (после содержимого)' },
                     { value: 'lateral', label: 'На боковой панели' }
                   ]}
-                  activeValue={selectedLocation}
-                  onChange={(newValue) => setSelectedLocation(newValue)}
+                  activeValue={fieldGroup.post_content.location}
+                  onChange={(newValue) => setFieldGroup(prev => ({
+                    ...prev,
+                    post_content: {
+                      ...prev.post_content,
+                      location: newValue
+                    }
+                  }))}
                 />
                 <LineareSelect
                   title="Положение этикетки"
@@ -237,8 +295,14 @@ const SettingsGroup = () => {
                     { value: 'top', label: 'По верхнему краю' },
                     { value: 'left', label: 'По левому краю' }
                   ]}
-                  activeValue={selectedLocationLabel}
-                  onChange={(newValue) => setSelectedLocationLabel(newValue)}
+                  activeValue={fieldGroup.post_content.locationLabel}
+                  onChange={(newValue) => setFieldGroup(prev => ({
+                    ...prev,
+                    post_content: {
+                      ...prev.post_content,
+                      locationLabel: newValue
+                    }
+                  }))}
                 />
                 <LineareSelect
                   title="Положение инструкции"
@@ -246,21 +310,29 @@ const SettingsGroup = () => {
                     { value: 'label', label: 'Под этикетками' },
                     { value: 'fuild', label: 'Под полями' }
                   ]}
-                  activeValue={selectedLocationManual}
-                  onChange={(newValue) => setSelectedLocationManual(newValue)}
+                  activeValue={fieldGroup.post_content.locationManual}
+                  onChange={(newValue) => setFieldGroup(prev => ({
+                    ...prev,
+                    post_content: {
+                      ...prev.post_content,
+                      locationManual: newValue
+                    }
+                  }))}
                 />
                 <InputText
                   title="Порядковый номер"
-                  value={textNumber}
+                  value={fieldGroup.menu_order}
                   description="Группы сортируются по возрастанию номеров"
                   onlyPositiveInteger={true}
-                  onChangeImmediate={(val) => setTextNumber(val)}
-                  onChangeDebounced={(val) => {
-                    console.log('Отправка на сервер:', val);
-                    // отправить запрос на сервер здесь
-                  }}
+                  onChangeImmediate={(val) =>
+                    setFieldGroup(prev => ({
+                      ...prev,
+                      menu_order: val
+                    }))
+                  }
                 />
                 </div>
+                {/* ───────── ПОДРАЗДЕЛ «Настройки группы» ───────── */}
                 <div className='cfe-settingsgroup-contaner'>
                 <div className="cfe-settingsgroup-settings-contaner">
                   <p className="cfe-settingsgroup-settings-title">
@@ -269,28 +341,31 @@ const SettingsGroup = () => {
                 </div>
                 <ToggleSwitch
                   label="Активно"
-                  checked={isActive}
-                  onChange={(newState) => setIsActive(newState)}
+                  checked={fieldGroup?.post_status === 'publish'}
+                  onChange={(newState) => {
+                    setFieldGroup(prev => ({
+                      ...prev,
+                      post_status: newState ? 'publish' : 'cfe-disabled',
+                    }));
+                  }}
                 />
                 <InputText
                   title="Описание"
-                  value={textDescription}
+                  value={fieldGroup.post_content.description}
                   description="Отображается в таблице групп полей"
-                  onChangeImmediate={(val) => setTextDescription(val)}
-                  onChangeDebounced={(val) => {
-                    console.log('Отправка на сервер:', val);
-                    // отправить запрос на сервер здесь
-                  }}
+                  onChangeImmediate={(val) => setFieldGroup(prev => ({
+                    ...prev,
+                    post_content: {
+                      ...prev.post_content,
+                      description: val
+                    }
+                  }))}
                 />
                 <InputText
                   title="Ярлык"
-                  value={textIcon}
+                  value={fieldGroup.post_name}
                   description=""
                   onChangeImmediate={(val) => setTextIcon(val)}
-                  onChangeDebounced={(val) => {
-                    console.log('Отправка на сервер:', val);
-                    // отправить запрос на сервер здесь
-                  }}
                 />
                 </div>
                 <div className='cfe-settingsgroup-timeplace'>

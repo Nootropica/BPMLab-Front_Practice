@@ -1,92 +1,129 @@
+/**
+ * ============================================================================
+ *  GroupField.jsx
+ * ────────────────────────────────────────────────────────────────────────────
+ *  Главная страница плагина «Список групп полей».
+ *
+ *  Что делает компонент:
+ *    1.  Рендерит верхнюю панель <TopMain />  (кнопка «Создать группу»,
+ *        «Настройки таблицы» и т.д.).
+ *    2.  Показывает таблицу групп <GroupTable /> — с чек-боксами
+ *        множественного выбора.  От неё получаем массив `selectedIds`.
+ *    3.  Обрабатывает массовые действия («Активировать / Диактивировать /
+ *        Удалить») через REST-endpoint  PATCH /field-group/{id}/status.
+ *    4.  Поддерживает поиск с debounce 1 сек.  Пока только console.log.
+ *
+ *  Пропы:
+ *    onAddPage      – callback, нужен TopMain для создания новой вкладки
+ *    checkboxes     – объект «видимые столбцы»            (lifted-state)
+ *    setCheckboxes  – сеттер для этого объекта            (lifted-state)
+ * ============================================================================
+ */
+
 import React, { useState } from 'react';
-import TopMain from '../../components/TopMain/TopMain';
+import TopMain   from '../../components/TopMain/TopMain';
 import GroupTable from '../../components/GroupTable/GroupTable';
 import './GroupField.css';
 
+/* общий REST-хелпер */
+const cfeChangeGroupStatus = (id, target = '') => {
+	const query = target ? `?target_status=${target}` : '';
+	return wp.apiFetch({
+		path   : `${cfeSettings.field_group_status_base}/${id}/status${query}`
+		         .replace(window.location.origin, ''),
+		method : 'PATCH',
+		headers: { 'X-WP-Nonce': cfeSettings.nonce },
+	});
+};
+
 const GroupField = ({ onAddPage, checkboxes, setCheckboxes }) => {
-  const [inputValue, setInputValue] = useState('');
-  const [timer, setTimer] = useState(null);
-  
-  const handleInputChange = (e) => {
-    const { value } = e.target;
-    setInputValue(value);
-  
-    if (timer) {
-      clearTimeout(timer);
-    }
-  
-    const newTimer = setTimeout(() => {
-      CfeGroupfieldHSendRequest(value);
-    }, 1000);
-  
-    setTimer(newTimer);
-  };
-  
-  const CfeGroupfieldHSendRequest = (data) => {
-    console.log('Request was sent successfully: ', data);
-  };
+	/* ───────── поиск ───────── */
+	const [inputValue, setInputValue]     = useState('');
+	const [typingTimer, setTypingTimer]   = useState(null);
 
-  const handleSelectedIdsChange = (ids) => {
-    console.log('Выбранные ID:', ids);
-  };
+	/* ───────── выбранные id + токен перезагрузки ───────── */
+	const [selectedIds, setSelectedIds]   = useState([]);
+	const [reloadToken, setReloadToken]   = useState(0);
 
-  function CfeGroupfieldHandleActivate() {
-    console.log('Активация выполнена');
-  }
-  
-  function CfeGroupfieldHandleDeactivate() {
-    console.log('Деактивация выполнена');
-  }
-  
-  function CfeGroupfieldHandleDelete() {
-    console.log('Удаление выполнено');
-  }
+	/* ───────── поиск с debounce ───────── */
+	const handleInputChange = e => {
+		const { value } = e.target;
+		setInputValue(value);
 
-  const test = true;
-  return (
-    <>
-      < TopMain onAddPage={onAddPage} checkboxes={checkboxes} setCheckboxes={setCheckboxes}/>
-      
-      {test ? (
-        <div className="cfe-groupfield-content-true">
-          <div class="cfe-groupfield-search-input-wrapper">
-            <div class="cfe-groupfield-input-container">
-              <input 
-                type="text" 
-                placeholder="Поиск"
-                value={inputValue}
-                onChange={handleInputChange} 
-              />
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9.5 16C7.68333 16 6.146 15.3707 4.888 14.112C3.63 12.8533 3.00067 11.316 3 9.5C2.99933 7.684 3.62867 6.14667 4.888 4.888C6.14733 3.62933 7.68467 3 9.5 3C11.3153 3 12.853 3.62933 14.113 4.888C15.373 6.14667 16.002 7.684 16 9.5C16 10.2333 15.8833 10.925 15.65 11.575C15.4167 12.225 15.1 12.8 14.7 13.3L20.3 18.9C20.4833 19.0833 20.575 19.3167 20.575 19.6C20.575 19.8833 20.4833 20.1167 20.3 20.3C20.1167 20.4833 19.8833 20.575 19.6 20.575C19.3167 20.575 19.0833 20.4833 18.9 20.3L13.3 14.7C12.8 15.1 12.225 15.4167 11.575 15.65C10.925 15.8833 10.2333 16 9.5 16ZM9.5 14C10.75 14 11.8127 13.5627 12.688 12.688C13.5633 11.8133 14.0007 10.7507 14 9.5C13.9993 8.24933 13.562 7.187 12.688 6.313C11.814 5.439 10.7513 5.00133 9.5 5C8.24867 4.99867 7.18633 5.43633 6.313 6.313C5.43967 7.18967 5.002 8.252 5 9.5C4.998 10.748 5.43567 11.8107 6.313 12.688C7.19033 13.5653 8.25267 14.0027 9.5 14Z" fill="#50575E"/>
-              </svg>
+		if (typingTimer) clearTimeout(typingTimer);
+		setTypingTimer(setTimeout(() => console.log('Поиск:', value), 1000));
+	};
 
-            </div>
-          </div>
-          < GroupTable checkboxes={checkboxes}  onSelectedIdsChange={handleSelectedIdsChange}/>
-          <div className="cfe-groupfield-buttons">
-            <button 
-              className="cfe-groupfield-button"
-              onClick={() => CfeGroupfieldHandleActivate()}
-            >
-              Активировать
-            </button>
-            <button 
-              className="cfe-groupfield-button"
-              onClick={() => CfeGroupfieldHandleDeactivate()}
-            >
-              Диактивировать
-            </button>
-            <button 
-              className="cfe-groupfield-button cfe-groupfield-button-last"
-              onClick={() => CfeGroupfieldHandleDelete()}
-            >
-              Удалить
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div className="cfe-groupfield-content-false">
+	/* ───────── из таблицы пришёл новый список выбранных id ───────── */
+	const handleSelectedIdsChange = ids => setSelectedIds(ids);
+
+	/* ───────── массовые операции ───────── */
+	const bulkAction = target => {
+		if (!selectedIds.length) {
+			alert('Отметьте хотя бы одну группу');
+			return;
+		}
+		if (target === 'trash' &&
+			!window.confirm('Удалить выбранные группы?')) return;
+
+		Promise.all(selectedIds.map(id => cfeChangeGroupStatus(id, target)))
+			.then(() => {
+				setSelectedIds([]);
+				setReloadToken(t => t + 1);
+			})
+			.catch(err => alert(`Ошибка: ${err.message}`));
+	};
+
+	const handleActivate   = () => bulkAction('publish');
+	const handleDeactivate = () => bulkAction('draft');
+	const handleDelete     = () => bulkAction('trash');
+
+	const showTable = true;
+
+	return (
+		<>
+			<TopMain
+				onAddPage={onAddPage}
+				checkboxes={checkboxes}
+				setCheckboxes={setCheckboxes}
+			/>
+
+			{showTable ? (
+				<div className="cfe-groupfield-content-true">
+
+					{/* ───────── Поиск ───────── */}
+					<div className="cfe-groupfield-search-input-wrapper">
+						<div className="cfe-groupfield-input-container">
+							<input
+								type="text"
+								placeholder="Поиск"
+								value={inputValue}
+								onChange={handleInputChange}
+							/>
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+								<path d="M9.5 16C..." fill="#50575E"/>
+							</svg>
+						</div>
+					</div>
+
+					{/* ───────── Таблица ───────── */}
+					<GroupTable
+						checkboxes={checkboxes}
+						onSelectedIdsChange={handleSelectedIdsChange}
+						reloadToken={reloadToken}
+					/>
+
+					{/* ───────── Кнопки массовых действий ───────── */}
+					<div className="cfe-groupfield-buttons">
+						<button className="cfe-groupfield-button"                onClick={handleActivate}>Активировать</button>
+						<button className="cfe-groupfield-button"                onClick={handleDeactivate}>Диактивировать</button>
+						<button className="cfe-groupfield-button cfe-groupfield-button-last"
+						        onClick={handleDelete}>Удалить</button>
+					</div>
+				</div>
+			) : (
+				/* ───────── блок, когда групп нет ───────── */
+				<div className="cfe-groupfield-content-false">
           <div className="cfe-groupfield-create-block">
             <p className="cfe-groupfield-create-title">Создайте свою первую</p>
             <p className="cfe-groupfield-create-title">группу полей</p>
@@ -114,9 +151,9 @@ const GroupField = ({ onAddPage, checkboxes, setCheckboxes }) => {
           
           </div>
         </div>
-      )}
-    </>
-  );
+			)}
+		</>
+	);
 };
 
 export default GroupField;

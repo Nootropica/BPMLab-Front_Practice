@@ -1,5 +1,23 @@
+/**
+ * ============================================================================
+ *  IconTextType.jsx
+ * ────────────────────────────────────────────────────────────────────────────
+ *  Отображает «иконка-в-кружке + подпись» для разных типов поля.
+ *
+ *  Пропы:
+ *    value     – строка-идентификатор типа ('text' | 'number' | 'image' | 'file')
+ *    iconSize  – CSS-размер кружка (по умолчанию 30px)
+ *
+ *  Внутри просто условный рендер: если value === 'text' → показываем блок
+ *  с текстовой иконкой, и т.д.
+ * ============================================================================
+ */
+
 import React from 'react';
 
+/* ──────────────────── inline-style helpers ──────────────────── */
+
+/* генератор стилей кружка-иконки */
 const iconStyles = (size) => ({
   width: size,
   height: size,
@@ -12,6 +30,7 @@ const iconStyles = (size) => ({
   backgroundColor: 'transparent'
 });
 
+/* стиль «строка: иконка + подпись» */
 const rowStyle = {
   display: 'flex',
   alignItems: 'center',
@@ -19,9 +38,11 @@ const rowStyle = {
   backgroundColor: 'transparent'
 };
 
+/* ───────────────────── main component ───────────────────── */
 const IconTextType = ({ value, iconSize = '30px' }) => {
   return (
     <>
+    {/* ───────── Текст ───────── */}
       {value === "text" && (
         <div style={rowStyle}>
           <div style={iconStyles(iconSize)}>
@@ -32,6 +53,7 @@ const IconTextType = ({ value, iconSize = '30px' }) => {
           Текст
         </div>
       )}
+      {/* ───────── Число ───────── */}
       {value === "number" && (
         <div style={rowStyle}>
           <div style={iconStyles(iconSize)}>
@@ -42,6 +64,7 @@ const IconTextType = ({ value, iconSize = '30px' }) => {
           Число
         </div>
       )}
+      {/* ───────── Изображение ───────── */}
       {value === "image" && (
         <div style={rowStyle}>
           <div style={iconStyles(iconSize)}>
@@ -52,6 +75,7 @@ const IconTextType = ({ value, iconSize = '30px' }) => {
           Изображение
         </div>
       )}
+      {/* ───────── Файл ───────── */}
       {value === "file" && (
         <div style={rowStyle}>
           <div style={iconStyles(iconSize)}>

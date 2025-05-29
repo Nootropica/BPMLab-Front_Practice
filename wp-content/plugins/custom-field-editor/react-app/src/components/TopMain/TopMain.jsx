@@ -1,18 +1,46 @@
+/**
+ * ============================================================================
+ *  TopMain.jsx
+ * ────────────────────────────────────────────────────────────────────────────
+ *  Верхняя «шапка» интерфейса плагина.
+ *
+ *  Два режима работы (определяются по URL):
+ *
+ *    •  “/” (root) – список групп.
+ *        ├─ Кнопка «Создать группу»
+ *        ├─ “Настройки таблицы” (выпадающий блок + чек-боксы столбцов)
+ *        └─ Получаем / сохраняем настройки отображения через REST.
+ *
+ *    •  “/cfe-settings-group” – страница конкретной группы.
+ *        ├─ Инпут «Название группы» (debounce-сохранение пока заглушка)
+ *        └─ Кнопка «Сохранить изменения» (переход назад на “/”)
+ *
+ *  Пропы:
+ *    onAddPage?      – кастомный callback, вызывается ДО обращения к API
+ *    checkboxes      – объект настроек видимости столбцов
+ *    setCheckboxes   – сеттер из родителя (верхний state lifting)
+ * ============================================================================
+ */
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './TopMain.css';
 
 const TopMain = ({ onAddPage, checkboxes, setCheckboxes }) => {
+    /* ───────── маршрутизация ───────── */
     const navigate = useNavigate();
     const location = useLocation();
+    /* ───────── локальный UI-state ───────── */
     const [showSettingsBlock, setShowSettingsBlock] = useState(false);
     const [settingsOpenAnimation, setSettingsOpenAnimation] = useState(false);
     const currentPath = location.pathname + location.search;
 
-    /* Часть для обработки страницы "Группы полей" */
+    /* =========================================================================
+     *  1.  ПОЛУЧАЕМ  НАСТРОЙКИ  ТАБЛИЦЫ (root path only)
+     * ====================================================================== */
     useEffect(() => {
         if (currentPath === '/') {
-            fetch(cfeSettings.rest_url, {
+            fetch(cfeSettings.settings_url, {
                 method: 'GET',
                 headers: {
                     'X-WP-Nonce': cfeSettings.nonce,
@@ -28,6 +56,9 @@ const TopMain = ({ onAddPage, checkboxes, setCheckboxes }) => {
         }
     }, [currentPath]);
 
+    /* =========================================================================
+     *  2.  HANDLERS
+     * ====================================================================== */
     const handleCheckboxChange = (e) => {
         const { name, checked } = e.target;
 
@@ -38,7 +69,7 @@ const TopMain = ({ onAddPage, checkboxes, setCheckboxes }) => {
 
         setCheckboxes(newState);
 
-        fetch(cfeSettings.rest_url, {
+        fetch(cfeSettings.settings_url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -55,10 +86,29 @@ const TopMain = ({ onAddPage, checkboxes, setCheckboxes }) => {
             });
     };
 
-    const handleAddGroupClick = () => {
+    const handleAddGroupClick = async () => {
         if (onAddPage) onAddPage();
-        navigate('/cfe-settings-group', { state: { blockId: 0 } });
+
+        try {
+            const response = await fetch(cfeSettings.post_group_url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-WP-Nonce': cfeSettings.nonce,
+                },
+            });
+
+            if (!response.ok) throw new Error(`Error ${response.status}`);
+            const data = await response.json();
+
+            console.log('Post created:', data);
+            navigate('/cfe-settings-group', { state: { blockId: data.id } });
+
+        } catch (error) {
+            console.error('Error creating post:', error);
+        }
     };
+
 
     const handleSettingsClick = () => {
         if (!showSettingsBlock) {
@@ -74,7 +124,7 @@ const TopMain = ({ onAddPage, checkboxes, setCheckboxes }) => {
         }
     };
 
-    /* Часть для обработки страницы "Настройки группы" */
+    /* ───────── дебаунс для инпута (режим settings-group) ───────── */
     const [inputValue, setInputValue] = useState('');
     const [timer, setTimer] = useState(null);
 
@@ -97,16 +147,22 @@ const TopMain = ({ onAddPage, checkboxes, setCheckboxes }) => {
         console.log('Request was sent successfully: ', data);
     };
 
+    /* сохранить → вернуться на список */
     const handleSaveChangeClick = () => {
         navigate(`/`);
     };
 
+    /* =========================================================================
+     *  3.  RENDER  (switch по pathname)
+     * ====================================================================== */
     let content;
     switch (currentPath) {
+        /* ─────────────────────────────────────────────── root ("/") ───────── */
         case '/':
             content = (
                 <>
                     <div className="cfe_topmain">
+                        {/* ───────── кнопка «Создать группу» ───────── */}
                         <button
                             className="cfe_topmain_main_button"
                             onClick={handleAddGroupClick}
@@ -118,12 +174,14 @@ const TopMain = ({ onAddPage, checkboxes, setCheckboxes }) => {
                             Создать группу
                         </button>
 
+                        {/* декоративный «эффект растекания» (слева) */}
                         <div className="cfe_topmain_spreading-effect-block">
                             <div
                                 className={`cfe_topmain_spreading-effect cfe_topmain_spreading-effect-left ${settingsOpenAnimation ? 'activ' : ''}`}
                             />
                         </div>
 
+                        {/* ───────── кнопка «Настройки таблицы» ───────── */}
                         <button
                             className={`cfe_topmain_button_settings ${settingsOpenAnimation ? 'active' : ''}`}
                             onClick={handleSettingsClick}
@@ -139,7 +197,7 @@ const TopMain = ({ onAddPage, checkboxes, setCheckboxes }) => {
                             </svg>
                             Настройки таблицы
                         </button>
-
+                        {/* декоративный «эффект растекания» (справа) */}
                         <div className="cfe_topmain_spreading-effect-block">
                             <div
                                 className={`cfe_topmain_spreading-effect cfe_topmain_spreading-effect-right ${settingsOpenAnimation ? 'activ' : ''}`}
@@ -147,6 +205,7 @@ const TopMain = ({ onAddPage, checkboxes, setCheckboxes }) => {
                         </div>
                     </div>
 
+                    {/* ───────── выпадающий блок настроек колонок ───────── */}
                     {showSettingsBlock && (
                         <div className={`cfe_settings_block ${settingsOpenAnimation ? 'open' : ''}`}>
                             <h4 className="cfe_settings_block_title">Столбцы</h4>
@@ -160,6 +219,7 @@ const TopMain = ({ onAddPage, checkboxes, setCheckboxes }) => {
                                             onChange={handleCheckboxChange}
                                             className="cfe_custom_checkbox_input"
                                         />
+                                        {/* кастомная иконка чек-бокса */}
                                         <span className={`cfe_custom_checkbox_icon ${checkboxes[name] ? 'checked' : ''}`}>
                                             {checkboxes[name] && (
                                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -177,6 +237,7 @@ const TopMain = ({ onAddPage, checkboxes, setCheckboxes }) => {
             );
             break;
 
+        /* ────────────────────────────── страница группы ("/cfe-settings-group") ───────── */
         case '/cfe-settings-group':
             content =(
                 <>
@@ -198,7 +259,7 @@ const TopMain = ({ onAddPage, checkboxes, setCheckboxes }) => {
                 </>
             );
              break;
-
+        /* ────────────────────────────── fallback ───────── */
         default:
             content = null;
     }
